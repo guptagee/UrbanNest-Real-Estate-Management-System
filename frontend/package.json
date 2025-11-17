@@ -1,0 +1,31 @@
+{
+  "name": "rems-frontend",
+  "version": "1.0.0",
+  "description": "Real Estate Management System Frontend",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
+    "axios": "^1.5.1",
+    "react-query": "^3.39.3",
+    "@tanstack/react-query": "^5.8.4",
+    "react-icons": "^4.11.0",
+    "react-hot-toast": "^2.4.1",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.1",
+    "vite": "^4.5.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+
