@@ -77,9 +77,17 @@ exports.getBooking = async (req, res) => {
 
 // @desc    Create new booking
 // @route   POST /api/bookings
-// @access  Private
+// @access  Private (Users only)
 exports.createBooking = async (req, res) => {
   try {
+    // Only users (buyers) can create bookings
+    if (req.user.role !== 'user') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only buyers can book property viewings'
+      });
+    }
+
     const { property, bookingDate, bookingTime, message } = req.body;
 
     // Check if property exists

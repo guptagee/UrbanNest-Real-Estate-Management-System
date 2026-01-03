@@ -20,12 +20,35 @@ const Properties = () => {
     status: searchParams.get('status') || 'available'
   })
   const [showFilters, setShowFilters] = useState(false)
+  const [sortBy, setSortBy] = useState('newest')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [sortedProperties, setSortedProperties] = useState([])
 
   useEffect(() => {
     fetchProperties()
   }, [filters, page])
+
+  useEffect(() => {
+    // Sort properties client-side
+    const sorted = [...properties].sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return a.price - b.price
+        case 'price-high':
+          return b.price - a.price
+        case 'newest':
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        case 'oldest':
+          return new Date(a.createdAt) - new Date(b.createdAt)
+        case 'popular':
+          return (b.views || 0) - (a.views || 0)
+        default:
+          return 0
+      }
+    })
+    setSortedProperties(sorted)
+  }, [properties, sortBy])
 
   const fetchProperties = async () => {
     setLoading(true)
@@ -74,7 +97,12 @@ const Properties = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Browse Properties</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-900">Browse Properties</h1>
+            <a href="/projects" className="text-primary-600 hover:text-primary-700 font-medium">
+              Looking for New Projects? →
+            </a>
+          </div>
           
           {/* Search Bar */}
           <div className="flex gap-4 mb-4">
@@ -88,6 +116,17 @@ const Properties = () => {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="popular">Most Popular</option>
+            </select>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center"
@@ -264,7 +303,7 @@ const Properties = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {properties.map((property) => (
+              {sortedProperties.map((property) => (
                 <PropertyCard key={property._id} property={property} />
               ))}
             </div>

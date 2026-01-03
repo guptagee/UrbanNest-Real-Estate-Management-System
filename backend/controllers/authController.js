@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Admin = require('../models/Admin');
 const generateToken = require('../utils/generateToken');
 
 // @desc    Register user
@@ -14,6 +15,14 @@ exports.register = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'User already exists with this email'
+      });
+    }
+
+    // Validate role - admin cannot be registered via this endpoint
+    if (role === 'admin') {
+      return res.status(400).json({
+        success: false,
+        message: 'Admin accounts cannot be created through registration'
       });
     }
 
@@ -47,7 +56,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// @desc    Login user
+// @desc    Login user or admin
 // @route   POST /api/auth/login
 // @access  Public
 exports.login = async (req, res) => {
@@ -62,12 +71,60 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Check for user
+    // Check Admin collection first
+    let admin = await Admin.findOne({ email }).select('+password');
+    if (admin) {
+      // Check if admin is active
+      if (!admin.isActive) {
+        return res.status(401).json({
+          success: false,
+          message: 'Account is deactivated'
+        });
+      }
+
+      // Check if password matches
+      const isMatch = await admin.comparePassword(password);
+      if (!isMatch) {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid credentials'
+        });
+      }
+
+      // Update last login
+      admin.lastLogin = Date.now();
+      await admin.save();
+
+      const token = generateToken(admin._id);
+
+      return res.status(200).json({
+        success: true,
+        token,
+        user: {
+          id: admin._id,
+          name: admin.name,
+          email: admin.email,
+          role: 'admin',
+          phone: admin.phone,
+          avatar: admin.avatar
+        }
+      });
+    }
+
+    // Check User collection
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
+      });
+    }
+
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account is deactivated'
       });
     }
 
@@ -102,12 +159,36 @@ exports.login = async (req, res) => {
   }
 };
 
-// @desc    Get current logged in user
+// @desc    Get current logged in user or admin
 // @route   GET /api/auth/me
 // @access  Private
 exports.getMe = async (req, res) => {
   try {
+    let userData;
+    
+    // Check if it's an admin
+    if (req.userType === 'admin') {
+      const admin = await Admin.findById(req.user.id);
+      if (admin) {
+        userData = {
+          ...admin.toObject(),
+          role: 'admin'
+        };
+        return res.status(200).json({
+          success: true,
+          user: userData
+        });
+      }
+    }
+    
+    // Otherwise get user
     const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
     res.status(200).json({
       success: true,

@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
-import { FiMapPin, FiMaximize2, FiCalendar, FiMessageSquare, FiUser } from 'react-icons/fi'
+import { FiMapPin, FiMaximize2, FiCalendar, FiMessageSquare, FiUser, FiHeart } from 'react-icons/fi'
 import { FaBed, FaBath } from 'react-icons/fa'
 import { useAuth } from '../context/AuthContext'
+import PropertyCard from '../components/PropertyCard'
+import ReportModal from '../components/ReportModal'
 import toast from 'react-hot-toast'
 
 const PropertyDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { isAuthenticated, user } = useAuth()
+  const isBuyer = user?.role === 'user'
   const [property, setProperty] = useState(null)
+  const [similarProperties, setSimilarProperties] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isFavorite, setIsFavorite] = useState(false)
   const [showBookingModal, setShowBookingModal] = useState(false)
+  const [showReportModal, setShowReportModal] = useState(false)
   const [bookingData, setBookingData] = useState({
     bookingDate: '',
     bookingTime: '',
@@ -26,12 +32,26 @@ const PropertyDetail = () => {
   const fetchProperty = async () => {
     try {
       const response = await axios.get(`/api/properties/${id}`)
-      setProperty(response.data.data)
+      const propertyData = response.data.data
+      setProperty(propertyData)
+      
+      // Fetch similar properties
+      try {
+        const similarRes = await axios.get(`/api/properties?propertyType=${propertyData.propertyType}&city=${propertyData.location?.city}&status=available&limit=4`)
+        const similar = similarRes.data.data.filter(p => p._id !== id).slice(0, 3)
+        setSimilarProperties(similar)
+      } catch (error) {
+        // Silently fail - not critical
+      }
       
       // Add to search history if authenticated
       if (isAuthenticated) {
         try {
           await axios.post('/api/users/search-history', { propertyId: id })
+          // Check if property is in favorites
+          const profileRes = await axios.get('/api/users/profile')
+          const favorites = profileRes.data.data.favorites || []
+          setIsFavorite(favorites.some(fav => fav.toString() === id))
         } catch (error) {
           // Silently fail - not critical
         }
@@ -42,6 +62,22 @@ const PropertyDetail = () => {
       navigate('/properties')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleToggleFavorite = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to save favorites')
+      navigate('/login')
+      return
+    }
+
+    try {
+      const response = await axios.post('/api/users/favorites', { propertyId: id })
+      setIsFavorite(response.data.isFavorite)
+      toast.success(response.data.message)
+    } catch (error) {
+      toast.error('Failed to update favorites')
     }
   }
 
@@ -222,28 +258,67 @@ const PropertyDetail = () => {
 
             {/* Action Buttons */}
             {property.status === 'available' && (
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setShowBookingModal(true)}
-                  className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 flex items-center justify-center"
-                >
-                  <FiCalendar className="mr-2" />
-                  Book a Viewing
-                </button>
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-4">
+                  {isBuyer && (
+                    <button
+                      onClick={() => setShowBookingModal(true)}
+                      className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 flex items-center justify-center"
+                    >
+                      <FiCalendar className="mr-2" />
+                      Book a Viewing
+                    </button>
+                  )}
+                  {isAuthenticated && (
+                    <>
+                      {isBuyer && (
+                        <button
+                          onClick={handleToggleFavorite}
+                          className={`px-6 py-3 rounded-lg flex items-center justify-center border-2 ${
+                            isFavorite
+                              ? 'bg-red-50 border-red-500 text-red-600 hover:bg-red-100'
+                              : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <FiHeart className={`mr-2 ${isFavorite ? 'fill-current' : ''}`} />
+                          {isFavorite ? 'Saved' : 'Save'}
+                        </button>
+                      )}
+                      {isBuyer && (
+                        <Link
+                          to={`/messages?property=${id}&receiver=${property.agent?._id || property.owner?._id}`}
+                          className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 flex items-center justify-center"
+                        >
+                          <FiMessageSquare className="mr-2" />
+                          Contact Agent
+                        </Link>
+                      )}
+                    </>
+                  )}
+                </div>
                 {isAuthenticated && (
-                  <Link
-                    to={`/messages?property=${id}&receiver=${property.agent?._id || property.owner?._id}`}
-                    className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 flex items-center justify-center"
+                  <button
+                    onClick={() => setShowReportModal(true)}
+                    className="text-sm text-gray-500 hover:text-red-600 flex items-center justify-center gap-1 w-full"
                   >
-                    <FiMessageSquare className="mr-2" />
-                    Contact Agent
-                  </Link>
+                    <FiMapPin className="w-4 h-4" /> {/* Reusing an icon temporarily, report icon inside modal is better */}
+                    Report this listing
+                  </button>
                 )}
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        propertyId={id}
+        propertyTitle={property.title}
+        targetUserId={property.agent?._id || property.owner?._id}
+      />
 
       {/* Booking Modal */}
       {showBookingModal && (
@@ -303,6 +378,18 @@ const PropertyDetail = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Similar Properties */}
+      {similarProperties.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Properties</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {similarProperties.map((similarProperty) => (
+              <PropertyCard key={similarProperty._id} property={similarProperty} />
+            ))}
           </div>
         </div>
       )}

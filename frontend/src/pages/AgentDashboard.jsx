@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { FiHome, FiCalendar, FiMessageCircle, FiPlus } from 'react-icons/fi'
-import PropertyCard from '../components/PropertyCard'
+import { useAuth } from '../context/AuthContext'
+import DashboardLayout from '../components/DashboardLayout'
+import PropertyListItem from '../components/dashboard/PropertyListItem'
 import toast from 'react-hot-toast'
+import { FiPlus, FiHome, FiCalendar, FiMessageCircle, FiUsers, FiAlertCircle } from 'react-icons/fi'
 
 const AgentDashboard = () => {
+  const { user } = useAuth()
   const [stats, setStats] = useState({
     myProperties: 0,
     bookings: 0,
-    messages: 0,
-    views: 0
+    inquiries: 0,
+    available: 0,
+    sold: 0,
+    rented: 0
   })
   const [myProperties, setMyProperties] = useState([])
+  const [recentInquiries, setRecentInquiries] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -22,21 +28,28 @@ const AgentDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true)
-      const [propertiesRes, bookingsRes] = await Promise.all([
-        axios.get('/api/properties?limit=6'),
-        axios.get('/api/bookings?limit=5')
+      const [propertiesRes, bookingsRes, inquiriesRes] = await Promise.all([
+        axios.get('/api/users/my-properties'),
+        axios.get('/api/bookings').catch(() => ({ data: { data: [] } })),
+        axios.get('/api/inquiries?status=new').catch(() => ({ data: { data: [] } }))
       ])
-      
-      const myProps = propertiesRes.data.data.filter(
-        prop => prop.agent || prop.owner
-      )
-      
-      setMyProperties(myProps)
+
+      const properties = propertiesRes.data.data
+      setMyProperties(properties.slice(0, 5))
+      setRecentInquiries(inquiriesRes.data.data.slice(0, 5))
+
+      // Calculate stats from properties
+      const available = properties.filter(p => p.status === 'available').length
+      const sold = properties.filter(p => p.status === 'sold').length
+      const rented = properties.filter(p => p.status === 'rented').length
+
       setStats({
-        myProperties: propertiesRes.data.total || 0,
-        bookings: bookingsRes.data.count || 0,
-        messages: 0,
-        views: myProps.reduce((sum, p) => sum + (p.views || 0), 0)
+        myProperties: properties.length,
+        bookings: bookingsRes.data.data?.length || 0,
+        inquiries: inquiriesRes.data.data?.length || 0,
+        available,
+        sold,
+        rented
       })
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -46,150 +59,167 @@ const AgentDashboard = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    )
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Agent Dashboard</h1>
+    <DashboardLayout user={user}>
+      <div className="space-y-10">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Agent Dashboard</h1>
+            <p className="text-gray-500 mt-1">Manage properties, bookings, and communicate with buyers.</p>
+          </div>
           <Link
             to="/properties/new"
-            className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2"
+            className="bg-black text-white px-6 py-2.5 rounded-xl hover:bg-gray-800 transition-colors flex items-center gap-2 font-bold text-sm shadow-lg shadow-black/10"
           >
-            <FiPlus className="h-5 w-5" />
-            Add New Property
+            <FiPlus className="w-5 h-5" />
+            Add New Listing
           </Link>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <div className="p-3 bg-primary-100 rounded-lg">
-                <FiHome className="h-6 w-6 text-primary-600" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">My Properties</span>
+            <div className="flex items-end justify-between">
+              <span className="text-3xl font-bold">{stats.myProperties}</span>
+              <div className="w-16 h-8 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600">
+                <FiHome className="w-4 h-4" />
               </div>
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">My Properties</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.myProperties}</p>
-              </div>
+            </div>
+            <div className="mt-3 flex gap-2 text-xs">
+              <span className="text-green-600 font-medium">{stats.available} Available</span>
+              <span className="text-gray-400">•</span>
+              <span className="text-blue-600 font-medium">{stats.sold} Sold</span>
+              {stats.rented > 0 && (
+                <>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-purple-600 font-medium">{stats.rented} Rented</span>
+                </>
+              )}
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <FiCalendar className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Bookings</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.bookings}</p>
+
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">Bookings</span>
+            <div className="flex items-end justify-between">
+              <span className="text-3xl font-bold">{stats.bookings}</span>
+              <div className="w-16 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                <FiCalendar className="w-4 h-4" />
               </div>
             </div>
+            <p className="text-xs text-gray-500 mt-2">Total bookings</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <div className="p-3 bg-yellow-100 rounded-lg">
-                <FiMessageCircle className="h-6 w-6 text-yellow-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Messages</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.messages}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <FiHome className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Total Views</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.views}</p>
+
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">New Inquiries</span>
+            <div className="flex items-end justify-between">
+              <span className="text-3xl font-bold">{stats.inquiries}</span>
+              <div className="w-16 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                <FiMessageCircle className="w-4 h-4" />
               </div>
             </div>
+            <p className="text-xs text-gray-500 mt-2">Awaiting response</p>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Link
-            to="/properties"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center">
-              <FiHome className="h-8 w-8 text-primary-600 mr-4" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Manage Properties</h3>
-                <p className="text-sm text-gray-600">View and edit your listings</p>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Property Listings */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold tracking-tight">My Properties</h2>
+              <Link to="/properties/new" className="text-xs font-bold text-primary-600 hover:underline">Add New</Link>
             </div>
-          </Link>
-          <Link
-            to="/bookings"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center">
-              <FiCalendar className="h-8 w-8 text-green-600 mr-4" />
-              <div>
-                <h3 className="font-semibold text-gray-900">View Bookings</h3>
-                <p className="text-sm text-gray-600">Manage property viewings</p>
-              </div>
-            </div>
-          </Link>
-          <Link
-            to="/messages"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center">
-              <FiMessageCircle className="h-8 w-8 text-yellow-600 mr-4" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Messages</h3>
-                <p className="text-sm text-gray-600">Communicate with clients</p>
-              </div>
-            </div>
-          </Link>
-        </div>
 
-        {/* My Properties */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">My Properties</h2>
-            <Link to="/properties" className="text-primary-600 hover:text-primary-700">
-              View All →
-            </Link>
+            <div className="space-y-4">
+              {loading ? (
+                <div className="animate-pulse space-y-4">
+                  {[1, 2, 3].map(i => <div key={i} className="h-32 bg-gray-100 rounded-2xl"></div>)}
+                </div>
+              ) : (
+                myProperties.length > 0 ? (
+                  myProperties.map(property => (
+                    <PropertyListItem key={property._id} property={property} onUpdate={fetchDashboardData} />
+                  ))
+                ) : (
+                  <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                    <FiHome className="w-10 h-10 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 font-medium text-sm">No properties listed yet.</p>
+                    <Link to="/properties/new" className="mt-4 inline-block text-xs font-bold text-primary-600">Create your first listing →</Link>
+                  </div>
+                )
+              )}
+            </div>
           </div>
-          {myProperties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {myProperties.map((property) => (
-                <PropertyCard key={property._id} property={property} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <FiHome className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">You haven't listed any properties yet.</p>
-              <Link
-                to="/properties/new"
-                className="text-primary-600 hover:text-primary-700 font-medium"
-              >
-                Add your first property →
-              </Link>
-            </div>
-          )}
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Recent Inquiries */}
+            <section className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold tracking-tight">Recent Inquiries</h2>
+                <Link to="/inquiries" className="text-xs font-bold text-primary-600 hover:underline">View All</Link>
+              </div>
+              <div className="space-y-3">
+                {loading ? (
+                  <div className="animate-pulse space-y-3">
+                    {[1, 2, 3].map(i => <div key={i} className="h-16 bg-gray-100 rounded-lg"></div>)}
+                  </div>
+                ) : recentInquiries.length > 0 ? (
+                  recentInquiries.map(inquiry => (
+                    <div key={inquiry._id} className="p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100">
+                      <div className="flex items-start gap-3">
+                        <div className="p-2 bg-blue-50 rounded-lg text-blue-600 flex-shrink-0">
+                          <FiUsers className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{inquiry.user?.name}</p>
+                          <p className="text-xs text-gray-500 truncate">{inquiry.property?.title}</p>
+                          <p className="text-xs text-gray-400 mt-1">{formatDate(inquiry.createdAt)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <FiAlertCircle className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500">No new inquiries</p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Quick Actions */}
+            <section className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <h2 className="text-lg font-bold tracking-tight mb-4">Quick Actions</h2>
+              <div className="space-y-3">
+                <Link to="/bookings" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-semibold border border-transparent hover:border-gray-100">
+                  <div className="p-2 bg-blue-50 rounded-lg text-blue-600"><FiCalendar className="w-4 h-4" /></div>
+                  Manage Bookings
+                </Link>
+                <Link to="/inquiries" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-semibold border border-transparent hover:border-gray-100">
+                  <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600"><FiMessageCircle className="w-4 h-4" /></div>
+                  View Inquiries
+                </Link>
+                <Link to="/messages" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-semibold border border-transparent hover:border-gray-100">
+                  <div className="p-2 bg-purple-50 rounded-lg text-purple-600"><FiMessageCircle className="w-4 h-4" /></div>
+                  Messages
+                </Link>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }
 
 export default AgentDashboard
-

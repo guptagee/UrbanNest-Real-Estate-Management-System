@@ -15,9 +15,9 @@ const PropertyCard = ({ property }) => {
   return (
     <Link
       to={`/properties/${property._id}`}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col"
     >
-      <div className="relative h-48 bg-gray-200">
+      <div className="relative h-64 bg-gray-200">
         {property.images && property.images.length > 0 ? (
           <img
             src={property.images[0]}
@@ -29,50 +29,33 @@ const PropertyCard = ({ property }) => {
             No Image
           </div>
         )}
-        {property.featured && (
-          <span className="absolute top-2 left-2 bg-primary-600 text-white px-2 py-1 rounded text-xs font-semibold">
-            Featured
+        {property.status === 'available' && (
+          <span className="absolute top-4 left-4 bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-md">
+            For Sale
           </span>
         )}
-        <span className="absolute top-2 right-2 bg-white text-gray-800 px-2 py-1 rounded text-sm font-semibold">
-          {formatPrice(property.price)}
-        </span>
       </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+      <div className="p-6 flex flex-col flex-grow">
+        <div className="flex items-center text-gray-600 text-sm mb-4 space-x-4">
+          <div className="flex items-center">
+            <FaBed className="mr-2 w-4 h-4" />
+            <span>{property.bedrooms} Beds</span>
+          </div>
+          <div className="flex items-center">
+            <FaBath className="mr-2 w-4 h-4" />
+            <span>{property.bathrooms} Baths</span>
+          </div>
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-1 leading-tight">
           {property.title}
         </h3>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-          {property.description}
-        </p>
-        <div className="flex items-center text-gray-500 text-sm mb-3">
-          <FiMapPin className="mr-1" />
-          <span className="line-clamp-1">
-            {property.location?.address}, {property.location?.city}, {property.location?.state}
-          </span>
+        <div className="text-2xl font-bold text-[#0E0E0E] mb-3">
+          {formatPrice(property.price)}
         </div>
-        <div className="flex items-center justify-between text-gray-600 text-sm">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <FaBed className="mr-1" />
-              <span>{property.bedrooms}</span>
-            </div>
-            <div className="flex items-center">
-              <FaBath className="mr-1" />
-              <span>{property.bathrooms}</span>
-            </div>
-            <div className="flex items-center">
-              <FiMaximize2 className="mr-1" />
-              <span>{property.area} {property.areaUnit || 'sqm'}</span>
-            </div>
-          </div>
-          <span className={`px-2 py-1 rounded text-xs ${
-            property.status === 'available' ? 'bg-green-100 text-green-800' :
-            property.status === 'sold' ? 'bg-red-100 text-red-800' :
-            property.status === 'rented' ? 'bg-blue-100 text-blue-800' :
-            'bg-yellow-100 text-yellow-800'
-          }`}>
-            {property.status}
+        <div className="flex items-center text-gray-500 text-sm mt-auto pt-4 border-t border-gray-100">
+          <FiMapPin className="mr-2 w-4 h-4 flex-shrink-0" />
+          <span className="line-clamp-1">
+            {property.location?.address}, {property.location?.city}
           </span>
         </div>
       </div>
@@ -81,4 +64,3 @@ const PropertyCard = ({ property }) => {
 }
 
 export default PropertyCard
-

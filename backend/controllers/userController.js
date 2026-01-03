@@ -151,3 +151,85 @@ exports.getMyProperties = async (req, res) => {
   }
 };
 
+// @desc    Toggle favorite property
+// @route   POST /api/users/favorites
+// @access  Private
+exports.toggleFavorite = async (req, res) => {
+  try {
+    const { propertyId } = req.body;
+
+    const property = await Property.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: 'Property not found'
+      });
+    }
+
+    const user = await User.findById(req.user.id);
+    const favoriteIndex = user.favorites.findIndex(
+      fav => fav.toString() === propertyId.toString()
+    );
+
+    if (favoriteIndex > -1) {
+      // Remove from favorites
+      user.favorites.splice(favoriteIndex, 1);
+      await user.save();
+      res.status(200).json({
+        success: true,
+        isFavorite: false,
+        message: 'Property removed from favorites'
+      });
+    } else {
+      // Add to favorites
+      user.favorites.push(propertyId);
+      await user.save();
+      res.status(200).json({
+        success: true,
+        isFavorite: true,
+        message: 'Property added to favorites'
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Get user's favorite properties
+// @route   GET /api/users/favorites
+// @access  Private
+exports.getFavorites = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user || !user.favorites || user.favorites.length === 0) {
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        data: []
+      });
+    }
+
+    const properties = await Property.find({
+      _id: { $in: user.favorites }
+    })
+      .populate('owner', 'name email phone')
+      .populate('agent', 'name email phone')
+      .sort('-createdAt');
+
+    res.status(200).json({
+      success: true,
+      count: properties.length,
+      data: properties
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+

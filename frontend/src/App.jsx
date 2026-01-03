@@ -5,9 +5,11 @@ import { AuthProvider } from './context/AuthContext'
 import PrivateRoute from './components/PrivateRoute'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import Footer from './components/Footer'
 import Properties from './pages/Properties'
 import PropertyDetail from './pages/PropertyDetail'
 import CreateProperty from './pages/CreateProperty'
+import EditProperty from './pages/EditProperty'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
@@ -16,6 +18,17 @@ import AgentDashboard from './pages/AgentDashboard'
 import Bookings from './pages/Bookings'
 import Messages from './pages/Messages'
 import Profile from './pages/Profile'
+import Inquiries from './pages/Inquiries'
+import MyListings from './pages/MyListings'
+import Favorites from './pages/Favorites'
+import PropertyAnalytics from './pages/PropertyAnalytics'
+import AboutUs from './pages/AboutUs'
+import ContactUs from './pages/ContactUs'
+import Projects from './pages/Projects'
+import ProjectDetail from './pages/ProjectDetail'
+import ChatWidget from './components/ChatWidget'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 
 const queryClient = new QueryClient()
 
@@ -33,8 +46,16 @@ function App() {
               <Route
                 path="/properties/new"
                 element={
-                  <PrivateRoute allowedRoles={['agent', 'admin']}>
+                  <PrivateRoute allowedRoles={['agent']}>
                     <CreateProperty />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/properties/:id/edit"
+                element={
+                  <PrivateRoute allowedRoles={['agent', 'admin']}>
+                    <EditProperty />
                   </PrivateRoute>
                 }
               />
@@ -88,8 +109,48 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route
+                path="/inquiries"
+                element={
+                  <PrivateRoute allowedRoles={['agent', 'admin']}>
+                    <Inquiries />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/my-listings"
+                element={
+                  <PrivateRoute allowedRoles={['agent', 'admin']}>
+                    <MyListings />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/favorites"
+                element={
+                  <PrivateRoute>
+                    <Favorites />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/properties/:id/analytics"
+                element={
+                  <PrivateRoute allowedRoles={['agent', 'admin']}>
+                    <PropertyAnalytics />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/:id" element={<ProjectDetail />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            <Footer />
+            <ChatWidget />
             <Toaster position="top-right" />
           </div>
         </Router>

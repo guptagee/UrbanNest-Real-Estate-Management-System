@@ -5,7 +5,9 @@ const {
   updateProfile,
   updatePreferences,
   addToSearchHistory,
-  getMyProperties
+  getMyProperties,
+  toggleFavorite,
+  getFavorites
 } = require('../controllers/userController');
 const { protect } = require('../middleware/auth');
 
@@ -14,6 +16,8 @@ router.put('/profile', protect, updateProfile);
 router.put('/preferences', protect, updatePreferences);
 router.post('/search-history', protect, addToSearchHistory);
 router.get('/my-properties', protect, getMyProperties);
+router.post('/favorites', protect, toggleFavorite);
+router.get('/favorites', protect, getFavorites);
 
 module.exports = router;
 

@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { FiArrowLeft, FiUpload } from 'react-icons/fi'
+import { useAuth } from '../context/AuthContext'
 
 const CreateProperty = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
@@ -89,6 +91,37 @@ const CreateProperty = () => {
     }))
   }
 
+  const handleGenerateDescription = async () => {
+    const { propertyType, location, area, bedrooms, bathrooms, price, amenities } = formData;
+    
+    if (!propertyType || !location.city || !price) {
+      toast.error('Please fill in Property Type, City, and Price to generate a description.');
+      return;
+    }
+
+    const toastId = toast.loading('Generating description...');
+    try {
+      const response = await axios.post('/api/ai/description', {
+        propertyType,
+        location: location, // Pass the whole location object or construct string
+        area: `${area} ${formData.areaUnit}`,
+        bedrooms,
+        bathrooms,
+        price,
+        amenities
+      });
+
+      setFormData(prev => ({
+        ...prev,
+        description: response.data.description
+      }));
+      toast.success('Description generated!', { id: toastId });
+    } catch (error) {
+      console.error('AI Error:', error);
+      toast.error(error.response?.data?.message || 'Failed to generate description.', { id: toastId });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -171,9 +204,18 @@ const CreateProperty = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleGenerateDescription}
+                      className="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors flex items-center"
+                    >
+                      ✨ Generate with AI
+                    </button>
+                  </div>
                   <textarea
                     name="description"
                     value={formData.description}
@@ -458,19 +500,21 @@ const CreateProperty = () => {
               </div>
             </div>
 
-            {/* Featured */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="featured"
-                checked={formData.featured}
-                onChange={handleChange}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-              />
-              <label className="ml-2 text-sm font-medium text-gray-700">
-                Mark as Featured Property
-              </label>
-            </div>
+            {/* Featured - Admin only */}
+            {user?.role === 'admin' && (
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={formData.featured}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 text-sm font-medium text-gray-700">
+                  Mark as Featured Property
+                </label>
+              </div>
+            )}
 
             {/* Submit Button */}
             <div className="flex gap-4">

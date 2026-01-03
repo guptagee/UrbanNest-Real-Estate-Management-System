@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
+import DashboardLayout from '../components/DashboardLayout'
 import toast from 'react-hot-toast'
+import { FiCheckCircle, FiXCircle, FiAlertCircle, FiUser, FiMail, FiPhone } from 'react-icons/fi'
 
 const Profile = () => {
   const { user: authUser, fetchUser } = useAuth()
@@ -113,15 +115,47 @@ const Profile = () => {
     )
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Profile</h1>
+  const getAccountStatus = () => {
+    if (user?.blocked) return { text: 'Blocked', color: 'text-red-600', bg: 'bg-red-50', icon: FiXCircle }
+    if (!user?.isActive) return { text: 'Inactive', color: 'text-amber-600', bg: 'bg-amber-50', icon: FiAlertCircle }
+    if (!user?.isVerified) return { text: 'Pending Verification', color: 'text-blue-600', bg: 'bg-blue-50', icon: FiAlertCircle }
+    return { text: 'Active', color: 'text-green-600', bg: 'bg-green-50', icon: FiCheckCircle }
+  }
 
-        <div className="space-y-6">
-          {/* Profile Information */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
+  const accountStatus = getAccountStatus()
+  const StatusIcon = accountStatus.icon
+
+  return (
+    <DashboardLayout user={user}>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">My Profile</h1>
+          <p className="text-gray-500 mt-1">Manage your account information and preferences</p>
+        </div>
+
+        {/* Account Status Card (for Agents) */}
+        {user?.role === 'agent' && (
+          <div className={`${accountStatus.bg} border border-gray-200 rounded-2xl p-6`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <StatusIcon className={`w-6 h-6 ${accountStatus.color}`} />
+                <div>
+                  <div className="font-semibold text-gray-900">Account Status</div>
+                  <div className={`text-sm font-medium ${accountStatus.color}`}>{accountStatus.text}</div>
+                </div>
+              </div>
+              {!user?.isVerified && (
+                <div className="text-xs text-gray-600">
+                  Your account is pending admin verification
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Profile Information */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h2 className="text-xl font-bold mb-4">Profile Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -172,23 +206,23 @@ const Profile = () => {
               </div>
               <button
                 type="submit"
-                className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700"
+                className="bg-black text-white px-6 py-2.5 rounded-xl hover:bg-gray-800 transition-colors font-semibold text-sm"
               >
                 Update Profile
               </button>
             </form>
-          </div>
+        </div>
 
-          {/* Preferences */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Property Preferences</h2>
+        {/* Preferences */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h2 className="text-xl font-bold mb-4">Property Preferences</h2>
             <form onSubmit={handlePreferencesSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Property Types
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {['house', 'apartment', 'condo', 'villa', 'land', 'commercial'].map((type) => (
+                  {['house', 'apartment', 'flat', 'villa', 'land', 'plot', 'commercial'].map((type) => (
                     <label key={type} className="flex items-center">
                       <input
                         type="checkbox"
@@ -264,15 +298,14 @@ const Profile = () => {
               </div>
               <button
                 type="submit"
-                className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700"
+                className="bg-black text-white px-6 py-2.5 rounded-xl hover:bg-gray-800 transition-colors font-semibold text-sm"
               >
                 Save Preferences
               </button>
             </form>
           </div>
         </div>
-      </div>
-    </div>
+      </DashboardLayout>
   )
 }
 

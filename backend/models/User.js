@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'agent', 'user'],
+    enum: ['agent', 'user'],
     default: 'user'
   },
   phone: {
@@ -37,7 +37,19 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  blocked: {
+    type: Boolean,
+    default: false
+  },
   searchHistory: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Property'
+  }],
+  favorites: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Property'
   }],
