@@ -87,47 +87,64 @@ const AgentDashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">My Properties</span>
-            <div className="flex items-end justify-between">
-              <span className="text-3xl font-bold">{stats.myProperties}</span>
-              <div className="w-16 h-8 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600">
-                <FiHome className="w-4 h-4" />
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-semibold text-blue-600 uppercase tracking-wight">My Properties</span>
+              <div className="p-2 bg-blue-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                <FiHome className="w-5 h-5" />
               </div>
             </div>
-            <div className="mt-3 flex gap-2 text-xs">
-              <span className="text-green-600 font-medium">{stats.available} Available</span>
-              <span className="text-gray-400">•</span>
-              <span className="text-blue-600 font-medium">{stats.sold} Sold</span>
-              {stats.rented > 0 && (
-                <>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-purple-600 font-medium">{stats.rented} Rented</span>
-                </>
-              )}
+            <div className="space-y-3">
+              <div className="text-4xl font-bold text-blue-900">{stats.myProperties}</div>
+              <div className="flex gap-3 text-xs">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-green-700 font-medium">{stats.available} Available</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <span className="text-blue-700 font-medium">{stats.sold} Sold</span>
+                </div>
+                {stats.rented > 0 && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    <span className="text-purple-700 font-medium">{stats.rented} Rented</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">Bookings</span>
-            <div className="flex items-end justify-between">
-              <span className="text-3xl font-bold">{stats.bookings}</span>
-              <div className="w-16 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                <FiCalendar className="w-4 h-4" />
+          <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-2xl border border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wight">Bookings</span>
+              <div className="p-2 bg-emerald-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                <FiCalendar className="w-5 h-5" />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Total bookings</p>
+            <div className="space-y-3">
+              <div className="text-4xl font-bold text-emerald-900">{stats.bookings}</div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span className="text-xs text-emerald-600 font-medium">Total bookings this month</span>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">New Inquiries</span>
-            <div className="flex items-end justify-between">
-              <span className="text-3xl font-bold">{stats.inquiries}</span>
-              <div className="w-16 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
-                <FiMessageCircle className="w-4 h-4" />
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-semibold text-purple-600 uppercase tracking-wight">New Inquiries</span>
+              <div className="p-2 bg-purple-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                <FiMessageCircle className="w-5 h-5" />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Awaiting response</p>
+            <div className="space-y-3">
+              <div className="text-4xl font-bold text-purple-900">{stats.inquiries}</div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                <span className="text-xs text-purple-600 font-medium">Awaiting your response</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -163,10 +180,10 @@ const AgentDashboard = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Recent Inquiries */}
-            <section className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold tracking-tight">Recent Inquiries</h2>
-                <Link to="/inquiries" className="text-xs font-bold text-primary-600 hover:underline">View All</Link>
+            <section className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-bold tracking-tight text-gray-900">Recent Inquiries</h2>
+                <Link to="/inquiries" className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors">View All</Link>
               </div>
               <div className="space-y-3">
                 {loading ? (
@@ -175,15 +192,15 @@ const AgentDashboard = () => {
                   </div>
                 ) : recentInquiries.length > 0 ? (
                   recentInquiries.map(inquiry => (
-                    <div key={inquiry._id} className="p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100">
+                    <div key={inquiry._id} className="p-4 rounded-xl hover:bg-blue-50 transition-all duration-200 border border-gray-100 hover:border-blue-200 group">
                       <div className="flex items-start gap-3">
-                        <div className="p-2 bg-blue-50 rounded-lg text-blue-600 flex-shrink-0">
+                        <div className="p-2 bg-blue-100 rounded-lg text-blue-600 flex-shrink-0 group-hover:scale-110 transition-transform">
                           <FiUsers className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 truncate">{inquiry.user?.name}</p>
-                          <p className="text-xs text-gray-500 truncate">{inquiry.property?.title}</p>
-                          <p className="text-xs text-gray-400 mt-1">{formatDate(inquiry.createdAt)}</p>
+                          <p className="text-xs text-gray-600 truncate mt-1">{inquiry.property?.title}</p>
+                          <p className="text-xs text-gray-400 mt-2">{formatDate(inquiry.createdAt)}</p>
                         </div>
                       </div>
                     </div>
@@ -198,20 +215,26 @@ const AgentDashboard = () => {
             </section>
 
             {/* Quick Actions */}
-            <section className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-              <h2 className="text-lg font-bold tracking-tight mb-4">Quick Actions</h2>
+            <section className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
+              <h2 className="text-lg font-bold tracking-tight mb-6 text-gray-900">Quick Actions</h2>
               <div className="space-y-3">
-                <Link to="/bookings" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-semibold border border-transparent hover:border-gray-100">
-                  <div className="p-2 bg-blue-50 rounded-lg text-blue-600"><FiCalendar className="w-4 h-4" /></div>
-                  Manage Bookings
+                <Link to="/bookings" className="flex items-center gap-3 p-4 rounded-xl hover:bg-blue-50 transition-all duration-200 text-sm font-semibold border border-gray-100 hover:border-blue-200 group">
+                  <div className="p-2 bg-blue-100 rounded-lg text-blue-600 group-hover:scale-110 transition-transform">
+                    <FiCalendar className="w-4 h-4" />
+                  </div>
+                  <span className="text-gray-700 group-hover:text-blue-700">Manage Bookings</span>
                 </Link>
-                <Link to="/inquiries" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-semibold border border-transparent hover:border-gray-100">
-                  <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600"><FiMessageCircle className="w-4 h-4" /></div>
-                  View Inquiries
+                <Link to="/inquiries" className="flex items-center gap-3 p-4 rounded-xl hover:bg-emerald-50 transition-all duration-200 text-sm font-semibold border border-gray-100 hover:border-emerald-200 group">
+                  <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600 group-hover:scale-110 transition-transform">
+                    <FiMessageCircle className="w-4 h-4" />
+                  </div>
+                  <span className="text-gray-700 group-hover:text-emerald-700">View Inquiries</span>
                 </Link>
-                <Link to="/messages" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-semibold border border-transparent hover:border-gray-100">
-                  <div className="p-2 bg-purple-50 rounded-lg text-purple-600"><FiMessageCircle className="w-4 h-4" /></div>
-                  Messages
+                <Link to="/messages" className="flex items-center gap-3 p-4 rounded-xl hover:bg-purple-50 transition-all duration-200 text-sm font-semibold border border-gray-100 hover:border-purple-200 group">
+                  <div className="p-2 bg-purple-100 rounded-lg text-purple-600 group-hover:scale-110 transition-transform">
+                    <FiMessageCircle className="w-4 h-4" />
+                  </div>
+                  <span className="text-gray-700 group-hover:text-purple-700">Messages</span>
                 </Link>
               </div>
             </section>

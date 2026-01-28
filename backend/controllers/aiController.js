@@ -1,15 +1,24 @@
 const OpenAI = require('openai');
 const Property = require('../models/Property');
+const Conversation = require('../models/Conversation');
+const conversationService = require('../services/conversationService');
 
-// Initialize OpenAI client pointing to OpenRouter
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.GEMINI_API_KEY, // User stored OpenRouter key here
-  defaultHeaders: {
-    "HTTP-Referer": "http://localhost:5173", // Site URL for OpenRouter rankings
-    "X-Title": "REMS", // Site title
+// Lazy initialization of OpenAI client
+let openai = null;
+
+const getOpenAIClient = () => {
+  if (!openai && process.env.GEMINI_API_KEY) {
+    openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.GEMINI_API_KEY,
+      defaultHeaders: {
+        "HTTP-Referer": "http://localhost:5173", // Site URL for OpenRouter rankings
+        "X-Title": "REMS", // Site title
+      }
+    });
   }
-});
+  return openai;
+};
 
 const MODELS = [
   "google/gemini-2.0-flash-001",
@@ -19,12 +28,17 @@ const MODELS = [
 ];
 
 // Helper to try models
-const generateWithOpenRouter = async (messages, jsonMode = false) => {
+const generateWithOpenRouter = async (messages, jsonMode = false, client = null) => {
+  const openaiClient = client || getOpenAIClient();
+  if (!openaiClient) {
+    throw new Error("OpenAI client not available");
+  }
+
   let lastError = null;
 
   for (const model of MODELS) {
     try {
-      const completion = await openai.chat.completions.create({
+      const completion = await openaiClient.chat.completions.create({
         model: model,
         messages: messages,
         temperature: 0.7,
@@ -46,32 +60,72 @@ const generateWithOpenRouter = async (messages, jsonMode = false) => {
 // FEATURE 1: AI CHATBOT
 const chatWithAI = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, sessionId } = req.body;
 
     if (!message) {
       return res.status(400).json({ message: 'Message is required' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(503).json({ message: 'API key not configured' });
-    }
+    // Generate session ID if not provided (for anonymous users)
+    const finalSessionId = sessionId || conversationService.generateSessionId();
 
-    const messages = [
-      { 
-        role: "system", 
-        content: "You are a real estate assistant for REMS. Answer only real-estate related queries. If data is unavailable, respond with a safe fallback." 
-      },
-      { role: "user", content: message }
-    ];
+    // Get or create conversation
+    const conversation = await conversationService.getOrCreateConversation(finalSessionId, req.user?.id);
 
-    const botReply = await generateWithOpenRouter(messages);
-    res.status(200).json({ reply: botReply });
+    // Analyze the user message
+    const analysis = conversationService.analyzeMessage(message, conversation);
+
+    // Update conversation state and preferences
+    conversationService.updateConversationState(conversation, analysis.intent, analysis.extractedData);
+
+    // Add user message to conversation history
+    conversation.messageHistory.push({
+      role: 'user',
+      content: message,
+      intent: analysis.intent,
+      extractedData: analysis.extractedData,
+      timestamp: new Date()
+    });
+
+    // Generate intelligent response
+    const response = await conversationService.generateResponse(
+      conversation,
+      analysis.intent,
+      analysis.extractedData,
+      message
+    );
+
+    // Add assistant response to conversation history
+    conversation.messageHistory.push({
+      role: 'assistant',
+      content: response.content,
+      intent: analysis.intent,
+      suggestedProperties: response.properties?.map(p => ({
+        propertyId: p.id,
+        relevanceScore: 1
+      })) || [],
+      timestamp: new Date()
+    });
+
+    conversation.totalMessages += 1;
+
+    // Save conversation
+    await conversation.save();
+
+    res.status(200).json({
+      reply: response.content,
+      sessionId: finalSessionId,
+      conversationState: conversation.conversationState,
+      type: response.type,
+      properties: response.properties || []
+    });
 
   } catch (error) {
     console.error('AI Chat Error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Failed to get AI response',
-      error: error.message 
+      error: error.message,
+      reply: "I'm sorry, I'm experiencing some technical difficulties right now. Please try again in a moment, or contact our support team for immediate assistance."
     });
   }
 };
@@ -86,7 +140,8 @@ const generatePropertyDescription = async (req, res) => {
         return res.status(400).json({ message: 'Missing required property details' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    const client = getOpenAIClient();
+    if (!client) {
       return res.status(503).json({ message: 'API key not configured' });
     }
 
@@ -118,7 +173,7 @@ const generatePropertyDescription = async (req, res) => {
       { role: "user", content: prompt }
     ];
 
-    const description = await generateWithOpenRouter(messages);
+    const description = await generateWithOpenRouter(messages, false, client);
     res.status(200).json({ description });
 
   } catch (error) {
@@ -139,7 +194,8 @@ const recommendProperties = async (req, res) => {
       return res.status(400).json({ message: 'Search query is required' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    const client = getOpenAIClient();
+    if (!client) {
       return res.status(503).json({ message: 'API key not configured' });
     }
 
@@ -165,7 +221,7 @@ const recommendProperties = async (req, res) => {
     ];
 
     // Note: jsonMode=true is supported by some models, but we'll parse manually to be safe across models
-    let jsonStr = await generateWithOpenRouter(messages, true);
+    let jsonStr = await generateWithOpenRouter(messages, true, client);
     
     // Cleanup markdown code blocks if present
     jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -246,8 +302,179 @@ const recommendProperties = async (req, res) => {
   }
 };
 
+// FEATURE 5: SEED TEST PROPERTIES (for development/testing)
+const seedTestProperties = async (req, res) => {
+  try {
+    const testProperties = [
+      {
+        title: "Modern 3BHK Apartment in Rajkot",
+        description: "Beautiful modern apartment with excellent amenities and city views. Perfect for families looking for comfortable living spaces.",
+        propertyType: "apartment",
+        price: 8500000,
+        location: {
+          address: "150 Feet Ring Road, Near Big Bazaar",
+          city: "Rajkot",
+          state: "Gujarat",
+          zipCode: "360005",
+          coordinates: { lat: 22.3039, lng: 70.8022 }
+        },
+        bedrooms: 3,
+        bathrooms: 2,
+        area: 1200,
+        areaUnit: "sqft",
+        images: ["/api/placeholder/400/300"],
+        amenities: ["gym", "parking", "pool", "security", "lift", "power backup"],
+        status: "available",
+        featured: true
+      },
+      {
+        title: "Luxury 2BHK Flat in Rajkot East",
+        description: "Spacious 2BHK flat with modern amenities in a prime location. Close to schools, hospitals, and shopping centers.",
+        propertyType: "flat",
+        price: 6500000,
+        location: {
+          address: "Kasturba Road, Rajkot East",
+          city: "Rajkot",
+          state: "Gujarat",
+          zipCode: "360001",
+          coordinates: { lat: 22.3072, lng: 70.7967 }
+        },
+        bedrooms: 2,
+        bathrooms: 2,
+        area: 950,
+        areaUnit: "sqft",
+        images: ["/api/placeholder/400/300"],
+        amenities: ["parking", "security", "garden", "modular kitchen"],
+        status: "available",
+        featured: false
+      },
+      {
+        title: "Premium 4BHK Villa in Rajkot",
+        description: "Luxurious villa with private garden and modern facilities. Perfect for those seeking privacy and space.",
+        propertyType: "villa",
+        price: 25000000,
+        location: {
+          address: "Kalavad Road, Near Airport",
+          city: "Rajkot",
+          state: "Gujarat",
+          zipCode: "360005",
+          coordinates: { lat: 22.3100, lng: 70.8100 }
+        },
+        bedrooms: 4,
+        bathrooms: 3,
+        area: 2500,
+        areaUnit: "sqft",
+        images: ["/api/placeholder/400/300"],
+        amenities: ["garden", "parking", "security", "pool", "servant quarter"],
+        status: "available",
+        featured: true
+      },
+      {
+        title: "Affordable 1BHK Apartment",
+        description: "Perfect for first-time buyers or investment. Well-maintained building with all basic amenities.",
+        propertyType: "apartment",
+        price: 3500000,
+        location: {
+          address: "University Road, Near Mota Bazaar",
+          city: "Rajkot",
+          state: "Gujarat",
+          zipCode: "360005",
+          coordinates: { lat: 22.2973, lng: 70.8022 }
+        },
+        bedrooms: 1,
+        bathrooms: 1,
+        area: 650,
+        areaUnit: "sqft",
+        images: ["/api/placeholder/400/300"],
+        amenities: ["parking", "security", "water supply"],
+        status: "available",
+        featured: false
+      },
+      {
+        title: "Commercial Space in Rajkot",
+        description: "Prime commercial location for business. High footfall area, perfect for retail or office space.",
+        propertyType: "commercial",
+        price: 15000000,
+        location: {
+          address: "Dr. Yagnik Road, Central Rajkot",
+          city: "Rajkot",
+          state: "Gujarat",
+          zipCode: "360001",
+          coordinates: { lat: 22.3050, lng: 70.8000 }
+        },
+        bedrooms: 0,
+        bathrooms: 2,
+        area: 1800,
+        areaUnit: "sqft",
+        images: ["/api/placeholder/400/300"],
+        amenities: ["parking", "security", "power backup", "ac"],
+        status: "available",
+        featured: false
+      }
+    ];
+
+    // Check if properties already exist
+    const existingCount = await Property.countDocuments();
+    if (existingCount > 0) {
+      return res.status(200).json({
+        success: true,
+        message: `Database already has ${existingCount} properties. No new properties added.`,
+        existingCount
+      });
+    }
+
+    // Create dummy users for the properties (since properties require owners)
+    const User = require('../models/User');
+
+    // Check if we have any users, if not create a dummy agent
+    let agent = await User.findOne({ role: 'agent' });
+    if (!agent) {
+      agent = await User.create({
+        name: 'Test Agent',
+        email: 'agent@test.com',
+        password: 'password123',
+        phone: '9876543210',
+        role: 'agent',
+        isActive: true
+      });
+    }
+
+    // Add owner/agent to all properties
+    const propertiesWithUsers = testProperties.map(prop => ({
+      ...prop,
+      owner: agent._id,
+      agent: agent._id
+    }));
+
+    const properties = await Property.insertMany(propertiesWithUsers);
+
+    res.status(201).json({
+      success: true,
+      message: `Successfully added ${properties.length} test properties to the database`,
+      count: properties.length,
+      properties: properties.map(p => ({
+        id: p._id,
+        title: p.title,
+        price: p.price,
+        bedrooms: p.bedrooms,
+        city: p.location.city,
+        type: p.propertyType
+      }))
+    });
+
+  } catch (error) {
+    console.error('Seed Test Properties Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to seed test properties',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   chatWithAI,
   generatePropertyDescription,
-  recommendProperties
+  recommendProperties,
+  seedTestProperties
 };

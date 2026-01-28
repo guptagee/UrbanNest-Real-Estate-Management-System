@@ -54,48 +54,56 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#F7F7F7]">
       {/* Hero Section */}
-      <section className="relative bg-white pt-32 pb-24">
-        <div className="max-w-7xl mx-auto px-8 lg:px-24">
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-6xl font-medium text-[#0E0E0E] leading-tight mb-6 tracking-tight">
-              Find your perfect space.
+      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 pt-32 pb-24 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-900/20"></div>
+
+        <div className="max-w-7xl mx-auto px-8 lg:px-24 relative z-10">
+          <div className="max-w-4xl animate-fade-in">
+            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6 tracking-tight">
+              Find your perfect
+              <span className="block bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent"> dream home 🏠</span>
             </h1>
-            <p className="text-xl text-[#6B6B6B] mb-8 leading-relaxed max-w-2xl">
-              Urbannest is your trusted partner for finding premium properties. 
-              Discover apartments, villas, and new developments in Rajkot and across India.
+            <p className="text-xl text-blue-100 mb-8 leading-relaxed max-w-2xl">
+              Urbannest is your trusted partner for finding premium properties.
+              Discover apartments, villas, and new developments across India.
             </p>
 
-            {/* Search Bar */}
-            <form onSubmit={handleSearch} className="mb-8 max-w-xl relative z-10">
-              <div className="relative flex items-center">
-                <FiSearch className="absolute left-4 text-gray-400 w-5 h-5" />
+            {/* Enhanced Search Bar */}
+            <form onSubmit={handleSearch} className="mb-8 max-w-2xl relative z-10 animate-slide-in-left">
+              <div className="relative flex items-center group">
+                <div className="absolute left-4 text-white/70 w-5 h-5 group-focus-within:text-white transition-colors">
+                  <FiSearch />
+                </div>
                 <input
                   type="text"
                   placeholder="Search by city, locality, or project..."
-                  className="w-full pl-12 pr-32 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0E0E0E] shadow-lg text-gray-900 bg-white"
+                  className="w-full pl-12 pr-32 py-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent shadow-2xl hover:shadow-3xl text-white placeholder-white/60 transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 bg-[#0E0E0E] text-white px-6 py-2.5 rounded-lg hover:bg-[#1A1A1A] transition-colors text-sm font-medium"
+                  className="absolute right-2 bg-white text-blue-600 px-8 py-3 rounded-xl hover:bg-blue-50 hover:shadow-2xl transition-all text-sm font-bold shadow-lg"
                 >
-                  Search
+                  Search Properties
                 </button>
               </div>
             </form>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 animate-slide-in-right">
               <Link
                 to="/properties"
-                className="bg-[#0E0E0E] text-white px-6 py-3 rounded-lg hover:bg-[#1A1A1A] transition-colors text-sm font-medium inline-flex items-center gap-2"
+                className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-blue-50 hover:shadow-2xl transition-all text-sm font-bold inline-flex items-center gap-2 shadow-xl"
               >
                 Explore Properties
-                <FiArrowRight className="w-4 h-4" />
+                <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/projects"
-                className="text-[#0E0E0E] px-6 py-3 rounded-lg hover:bg-[#F7F7F7] transition-colors text-sm font-medium border border-[#E6E6E6]"
+                className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-xl hover:bg-white/20 hover:shadow-xl transition-all text-sm font-bold border border-white/20"
               >
                 New Projects
               </Link>
@@ -105,24 +113,24 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white border-y border-[#E6E6E6]">
+      <section className="py-20 bg-gradient-to-r from-gray-50 to-blue-50 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-            <div>
-              <div className="text-4xl font-medium text-[#0E0E0E] mb-2">500+</div>
-              <div className="text-sm text-[#6B6B6B]">Properties Listed</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="group hover-lift cursor-default text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">500+</div>
+              <div className="text-sm text-gray-600 font-semibold">Properties Listed</div>
             </div>
-            <div>
-              <div className="text-4xl font-medium text-[#0E0E0E] mb-2">2,000+</div>
-              <div className="text-sm text-[#6B6B6B]">Happy Customers</div>
+            <div className="group hover-lift cursor-default text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">2,000+</div>
+              <div className="text-sm text-gray-600 font-semibold">Happy Customers</div>
             </div>
-            <div>
-              <div className="text-4xl font-medium text-[#0E0E0E] mb-2">15+</div>
-              <div className="text-sm text-[#6B6B6B]">Cities Covered</div>
+            <div className="group hover-lift cursor-default text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">15+</div>
+              <div className="text-sm text-gray-600 font-semibold">Cities Covered</div>
             </div>
-            <div>
-              <div className="text-4xl font-medium text-[#0E0E0E] mb-2">₹500Cr+</div>
-              <div className="text-sm text-[#6B6B6B]">Property Value Sold</div>
+            <div className="group hover-lift cursor-default text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">₹500Cr+</div>
+              <div className="text-sm text-gray-600 font-semibold">Property Value Sold</div>
             </div>
           </div>
         </div>
@@ -137,7 +145,7 @@ const Home = () => {
           <div className="mb-16">
             <h2 className="text-3xl font-medium text-[#0E0E0E] mb-4">Why Choose Urbannest?</h2>
             <p className="text-[#6B6B6B] text-lg max-w-2xl">
-              We simplify the real estate journey. Whether you are buying, selling, or renting, 
+              We simplify the real estate journey. Whether you are buying, selling, or renting,
               we provide the tools and transparency you need to make the right decision.
             </p>
           </div>
@@ -306,6 +314,158 @@ const Home = () => {
               <p className="text-[#6B6B6B] text-sm leading-relaxed">
                 Connect with the owner or agent, negotiate the best price, and make the property yours with confidence.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 bg-[#F7F7F7] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-8 lg:px-24">
+          <div className="max-w-3xl mb-16">
+            <h2 className="text-3xl font-medium text-[#0E0E0E] mb-4">What our customers say.</h2>
+            <p className="text-[#6B6B6B] text-lg">
+              Don't just take our word for it. Here's what our customers have to say about their experience with Urbannest.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="testimonial-card bg-white rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-all hover:shadow-xl">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-[#0E0E0E] mb-6 leading-relaxed">
+                "Finding my dream apartment was so easy with Urbannest. The platform is intuitive, and the property listings are detailed and accurate. Highly recommend!"
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#E6E6E6]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0E0E0E] to-[#4A4A4A] flex items-center justify-center text-white font-medium">
+                  RS
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[#0E0E0E]">Rajesh Sharma</div>
+                  <div className="text-xs text-[#6B6B6B]">Homebuyer, Mumbai</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="testimonial-card bg-white rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-all hover:shadow-xl animation-delay-200">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-[#0E0E0E] mb-6 leading-relaxed">
+                "As a property owner, listing on Urbannest was seamless. I received genuine inquiries within days and closed the deal in just two weeks!"
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#E6E6E6]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0E0E0E] to-[#4A4A4A] flex items-center justify-center text-white font-medium">
+                  PM
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[#0E0E0E]">Priya Mehta</div>
+                  <div className="text-xs text-[#6B6B6B]">Property Owner, Rajkot</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="testimonial-card bg-white rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-all hover:shadow-xl animation-delay-400">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-[#0E0E0E] mb-6 leading-relaxed">
+                "The AI chatbot helped me narrow down my search instantly. I found the perfect villa in my budget without spending hours browsing. Amazing service!"
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#E6E6E6]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0E0E0E] to-[#4A4A4A] flex items-center justify-center text-white font-medium">
+                  AK
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[#0E0E0E]">Amit Kumar</div>
+                  <div className="text-xs text-[#6B6B6B]">Investor, Bangalore</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 4 */}
+            <div className="testimonial-card bg-white rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-all hover:shadow-xl animation-delay-600">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-[#0E0E0E] mb-6 leading-relaxed">
+                "Urbannest made my first home purchase stress-free. The verified listings gave me confidence, and the booking process was incredibly smooth."
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#E6E6E6]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0E0E0E] to-[#4A4A4A] flex items-center justify-center text-white font-medium">
+                  SG
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[#0E0E0E]">Sneha Gupta</div>
+                  <div className="text-xs text-[#6B6B6B]">First-time Buyer, Delhi</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 5 */}
+            <div className="testimonial-card bg-white rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-all hover:shadow-xl animation-delay-800">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-[#0E0E0E] mb-6 leading-relaxed">
+                "Professional service from start to finish. The agent network is top-notch, and I appreciated the transparency throughout the entire process."
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#E6E6E6]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0E0E0E] to-[#4A4A4A] flex items-center justify-center text-white font-medium">
+                  VR
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[#0E0E0E]">Vikram Reddy</div>
+                  <div className="text-xs text-[#6B6B6B]">Real Estate Agent, Hyderabad</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 6 */}
+            <div className="testimonial-card bg-white rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-all hover:shadow-xl animation-delay-1000">
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-[#0E0E0E] mb-6 leading-relaxed">
+                "I've used several real estate platforms, but Urbannest stands out. The user experience is exceptional, and the property quality is consistently high."
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-[#E6E6E6]">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0E0E0E] to-[#4A4A4A] flex items-center justify-center text-white font-medium">
+                  NK
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-[#0E0E0E]">Neha Kapoor</div>
+                  <div className="text-xs text-[#6B6B6B]">Property Consultant, Pune</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

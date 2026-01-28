@@ -278,47 +278,91 @@ const AdminDashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">Platform Users</span>
-                <div className="flex items-end justify-between">
-                  <span className="text-3xl font-bold">{stats.totalUsers}</span>
-                  <div className="p-3 bg-blue-50 rounded-xl text-blue-600"><FiUsers className="w-5 h-5" /></div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-semibold text-blue-600 uppercase tracking-wight">Platform Users</span>
+                  <div className="p-2 bg-blue-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                    <FiUsers className="w-5 h-5" />
+                  </div>
                 </div>
-                <div className="mt-3 flex gap-2 text-xs">
-                  <span className="text-gray-400">•</span>
-                  <span className="text-gray-500">Agents: {stats.usersByRole?.agent || 0}</span>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-gray-500">Users: {stats.usersByRole?.user || 0}</span>
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">Total Listings</span>
-                <div className="flex items-end justify-between">
-                  <span className="text-3xl font-bold">{stats.totalProperties}</span>
-                  <div className="p-3 bg-emerald-50 rounded-xl text-emerald-600"><FiHome className="w-5 h-5" /></div>
-                </div>
-                <div className="mt-3 flex gap-2 text-xs">
-                  <span className="text-green-600 font-medium">{stats.propertiesByStatus?.available || 0} Available</span>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-blue-600 font-medium">{stats.propertiesByStatus?.sold || 0} Sold</span>
-                  {stats.propertiesByStatus?.pending > 0 && (
-                    <>
-                      <span className="text-gray-400">•</span>
-                      <span className="text-amber-600 font-medium">{stats.propertiesByStatus.pending} Pending</span>
-                    </>
-                  )}
+                <div className="space-y-3">
+                  <div className="text-4xl font-bold text-blue-900">{stats.totalUsers}</div>
+                  <div className="flex gap-3 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-blue-700 font-medium">Agents: {stats.usersByRole?.agent || 0}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
+                      <span className="text-blue-600 font-medium">Users: {stats.usersByRole?.user || 0}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-tight block mb-2">System Activity</span>
-                <div className="flex items-end justify-between">
-                  <span className="text-3xl font-bold">{stats.totalBookings}</span>
-                  <div className="p-3 bg-amber-50 rounded-xl text-amber-600"><FiCalendar className="w-5 h-5" /></div>
+              
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-2xl border border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wight">Total Listings</span>
+                  <div className="p-2 bg-emerald-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                    <FiHome className="w-5 h-5" />
+                  </div>
                 </div>
-                <div className="mt-3 flex gap-2 text-xs">
-                  <span className="text-blue-600 font-medium">Confirmed: {stats.bookingsByStatus?.confirmed || 0}</span>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-gray-500">Pending: {stats.bookingsByStatus?.pending || 0}</span>
+                <div className="space-y-3">
+                  <div className="text-4xl font-bold text-emerald-900">{stats.totalProperties}</div>
+                  <div className="flex gap-3 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                      <span className="text-emerald-700 font-medium">{stats.propertiesByStatus?.available || 0} Available</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-emerald-300 rounded-full"></div>
+                      <span className="text-emerald-600 font-medium">{stats.propertiesByStatus?.sold || 0} Sold</span>
+                    </div>
+                    {stats.propertiesByStatus?.pending > 0 && (
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                        <span className="text-amber-700 font-medium">{stats.propertiesByStatus.pending} Pending</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-6 rounded-2xl border border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-semibold text-amber-600 uppercase tracking-wight">System Activity</span>
+                  <div className="p-2 bg-amber-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                    <FiCalendar className="w-5 h-5" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="text-4xl font-bold text-amber-900">{stats.totalBookings}</div>
+                  <div className="flex gap-3 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                      <span className="text-amber-700 font-medium">Confirmed: {stats.bookingsByStatus?.confirmed || 0}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-amber-300 rounded-full"></div>
+                      <span className="text-amber-600 font-medium">Pending: {stats.bookingsByStatus?.pending || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-semibold text-purple-600 uppercase tracking-wight">Revenue</span>
+                  <div className="p-2 bg-purple-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                    <FiTrendingUp className="w-5 h-5" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="text-4xl font-bold text-purple-900">{formatPrice(stats.revenue || 0)}</div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-green-600 font-medium">+12% from last month</span>
+                  </div>
                 </div>
               </div>
             </div>

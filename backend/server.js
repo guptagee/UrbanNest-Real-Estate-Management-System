@@ -44,7 +44,6 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/ai', require('./routes/ai')); // AI Routes (Chat & Description)
-// app.use('/api/chat', require('./routes/chat')); // Legacy chat route
 
 
 // Builder/Project/Unit routes
