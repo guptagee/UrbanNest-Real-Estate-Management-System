@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BsChatDots, BsX, BsSend } from 'react-icons/bs';
-import axios from 'axios';
+import api from '../utils/api';
 
 const ChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -120,7 +120,7 @@ const ChatWidget = () => {
                 sessionId: sessionId
             };
 
-            const response = await axios.post('/api/ai/chat', payload);
+            const response = await api.post('/ai/chat', payload);
 
             // Simulate typing delay for better UX
             await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));

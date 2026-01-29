@@ -7,47 +7,6 @@ A comprehensive real estate management platform built with MERN stack.
 - `backend/` - Express.js API server
 - `frontend/` - React.js frontend application
 
-## Deployment
-
-### Frontend (Netlify)
-
-1. **Build for Production**
-```bash
-cd frontend
-npm run build
-```
-
-2. **Deploy to Netlify**
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Login to Netlify
-netlify login
-
-# Deploy to production
-netlify deploy --prod --dir=dist
-```
-
-3. **Custom Domain Setup**
-- Set custom domain: `urbannest.mukeshgupta.co.in`
-- Configure DNS settings as per Netlify instructions
-
-4. **Environment Variables**
-Set these in Netlify dashboard:
-- `VITE_API_URL`: `https://urbannest-backend.mukeshgupta.co.in`
-
-### Backend (Production Server)
-
-The backend should be deployed to a separate server (e.g., Vercel, Railway, or VPS) at:
-`https://urbannest-backend.mukeshgupta.co.in`
-
-Required environment variables:
-- `MONGODB_URI`: MongoDB connection string
-- `JWT_SECRET`: Secret key for JWT tokens
-- `GEMINI_API_KEY`: For AI features (optional)
-- `NODE_ENV`: `production`
-
 ## Setup Instructions
 
 ### Prerequisites

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FiHeart, FiCalendar, FiMessageSquare, FiTrendingUp, FiSearch } from 'react-icons/fi'
 import PropertyCard from '../../components/PropertyCard'
-import axios from 'axios'
+import api from '../../utils/api'
 
 const BuyerDashboard = ({ user }) => {
     const [favorites, setFavorites] = useState([])
@@ -18,9 +18,9 @@ const BuyerDashboard = ({ user }) => {
         try {
             setLoading(true)
             const [favRes, bookRes, recRes] = await Promise.all([
-                axios.get('/api/users/favorites').catch(() => ({ data: { data: [] } })),
-                axios.get('/api/bookings').catch(() => ({ data: { data: [] } })),
-                axios.get('/api/properties/recommendations').catch(() => ({ data: { data: [] } }))
+                api.get('/users/favorites').catch(() => ({ data: { data: [] } })),
+                api.get('/bookings').catch(() => ({ data: { data: [] } })),
+                api.get('/properties/recommendations').catch(() => ({ data: { data: [] } }))
             ])
 
             setFavorites(favRes.data.data?.slice(0, 3) || [])

@@ -13,37 +13,38 @@ import toast from 'react-hot-toast'
 const SidebarItem = ({ icon: Icon, label, href, badge, hasSubmenu, active }) => {
     const location = useLocation()
     
-    // Enhanced active state detection for admin tabs
-    const isActive = () => {
-        if (active) return true
+    // Enhanced active state detection
+    const isActive = active || (() => {
+        const currentPath = location.pathname + location.search
         
-        // Special handling for admin tabs with query parameters
+        // Check for exact match
+        if (currentPath === href) return true
+        
+        // Check for admin tab navigation
         if (href.includes('/admin?tab=')) {
-            const tabParam = href.split('tab=')[1]
-            const currentTab = new URLSearchParams(location.search).get('tab')
-            return location.pathname === '/admin' && currentTab === tabParam
+            const tabParam = new URLSearchParams(href.split('?')[1]).get('tab')
+            const currentTabParam = new URLSearchParams(location.search).get('tab')
+            return currentTabParam === tabParam
         }
         
-        return location.pathname === href
-    }
-    
-    const isCurrentlyActive = isActive()
+        // Check for partial matches
+        if (href !== '/dashboard' && currentPath.startsWith(href)) return true
+        
+        return false
+    })()
 
     return (
         <Link
             to={href}
-            className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative ${
-                isCurrentlyActive
-                    ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 font-medium shadow-lg shadow-blue-100 border border-blue-200'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 hover:shadow-md'
-            }`}
+            className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group relative ${isActive
+                ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 font-medium shadow-lg shadow-blue-100 border border-blue-200'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 hover:shadow-md'
+                }`}
         >
             <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg transition-all duration-200 ${
-                    isCurrentlyActive 
-                        ? 'bg-blue-500 text-white shadow-lg' 
-                        : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-600'
-                }`}>
+                <div className={`p-2 rounded-lg transition-all duration-200 ${isActive 
+                    ? 'bg-blue-500 text-white shadow-lg' 
+                    : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-600'}`}>
                     <Icon className="w-4 h-4" />
                 </div>
                 <span className="text-sm font-medium">{label}</span>
@@ -56,7 +57,7 @@ const SidebarItem = ({ icon: Icon, label, href, badge, hasSubmenu, active }) => 
                 )}
                 {hasSubmenu && <FiChevronDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />}
             </div>
-            {isCurrentlyActive && (
+            {isActive && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-500 rounded-r-full"></div>
             )}
         </Link>
@@ -162,7 +163,6 @@ const DashboardLayout = ({ children, user }) => {
                             <SidebarItem
                                 key={item.label}
                                 {...item}
-                                active={false} // Let SidebarItem handle active state detection
                             />
                         ))}
 
@@ -175,7 +175,6 @@ const DashboardLayout = ({ children, user }) => {
                                     <SidebarItem
                                         key={item.label}
                                         {...item}
-                                        active={false} // Let SidebarItem handle active state detection
                                     />
                                 ))}
                             </div>
@@ -189,7 +188,6 @@ const DashboardLayout = ({ children, user }) => {
                                 <SidebarItem
                                     key={item.label}
                                     {...item}
-                                    active={false} // Let SidebarItem handle active state detection
                                 />
                             ))}
                         </div>

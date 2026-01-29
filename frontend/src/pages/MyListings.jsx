@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import DashboardLayout from '../components/DashboardLayout'
 import PropertyListItem from '../components/dashboard/PropertyListItem'
@@ -70,7 +70,7 @@ const MyListings = () => {
   const fetchProperties = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/users/my-properties')
+      const response = await api.get('/users/my-properties')
       setProperties(response.data.data)
       setFilteredProperties(response.data.data)
     } catch (error) {

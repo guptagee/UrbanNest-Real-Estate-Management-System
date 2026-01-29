@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { FiMapPin, FiMaximize2, FiCalendar, FiMessageSquare, FiUser, FiHeart } from 'react-icons/fi'
 import { FaBed, FaBath } from 'react-icons/fa'
 import { useAuth } from '../context/AuthContext'
@@ -31,13 +31,13 @@ const PropertyDetail = () => {
 
   const fetchProperty = async () => {
     try {
-      const response = await axios.get(`/api/properties/${id}`)
+      const response = await api.get(`/properties/${id}`)
       const propertyData = response.data.data
       setProperty(propertyData)
       
       // Fetch similar properties
       try {
-        const similarRes = await axios.get(`/api/properties?propertyType=${propertyData.propertyType}&city=${propertyData.location?.city}&status=available&limit=4`)
+        const similarRes = await api.get(`/properties?propertyType=${propertyData.propertyType}&city=${propertyData.location?.city}&status=available&limit=4`)
         const similar = similarRes.data.data.filter(p => p._id !== id).slice(0, 3)
         setSimilarProperties(similar)
       } catch (error) {
@@ -47,9 +47,9 @@ const PropertyDetail = () => {
       // Add to search history if authenticated
       if (isAuthenticated) {
         try {
-          await axios.post('/api/users/search-history', { propertyId: id })
+          await api.post('/users/search-history', { propertyId: id })
           // Check if property is in favorites
-          const profileRes = await axios.get('/api/users/profile')
+          const profileRes = await api.get('/users/profile')
           const favorites = profileRes.data.data.favorites || []
           setIsFavorite(favorites.some(fav => fav.toString() === id))
         } catch (error) {
@@ -73,7 +73,7 @@ const PropertyDetail = () => {
     }
 
     try {
-      const response = await axios.post('/api/users/favorites', { propertyId: id })
+      const response = await api.post('/users/favorites', { propertyId: id })
       setIsFavorite(response.data.isFavorite)
       toast.success(response.data.message)
     } catch (error) {
@@ -90,7 +90,7 @@ const PropertyDetail = () => {
     }
 
     try {
-      await axios.post('/api/bookings', {
+      await api.post('/bookings', {
         property: id,
         ...bookingData
       })

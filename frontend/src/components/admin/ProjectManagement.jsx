@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../../utils/api'
 import toast from 'react-hot-toast'
 import { FiPlus, FiEdit, FiTrash2, FiSearch, FiToggleLeft, FiToggleRight, FiLayers, FiStar } from 'react-icons/fi'
 import { FaBuilding } from "react-icons/fa";
@@ -36,7 +36,7 @@ const ProjectManagement = () => {
 
   const fetchBuilders = async () => {
     try {
-      const response = await axios.get('/api/admin/builders', { params: { isActive: 'true' } })
+      const response = await api.get('/admin/builders', { params: { isActive: 'true' } })
       setBuilders(response.data.data || [])
     } catch (error) {
       console.error('Failed to load builders:', error)
@@ -46,7 +46,7 @@ const ProjectManagement = () => {
   const fetchProjects = async () => {
     try {
       const params = searchTerm ? { search: searchTerm } : {}
-      const response = await axios.get('/api/admin/projects', { params })
+      const response = await api.get('/admin/projects', { params })
       setProjects(response.data.data || [])
     } catch (error) {
       toast.error('Failed to load projects')
@@ -61,10 +61,10 @@ const ProjectManagement = () => {
       const data = { ...formData }
       if (data.possessionDate) data.possessionDate = new Date(data.possessionDate)
       if (editingProject) {
-        await axios.put(`/api/admin/projects/${editingProject._id}`, data)
+        await api.put(`/admin/projects/${editingProject._id}`, data)
         toast.success('Project updated successfully')
       } else {
-        await axios.post('/api/admin/projects', data)
+        await api.post('/admin/projects', data)
         toast.success('Project created successfully')
       }
       setShowForm(false)
@@ -99,7 +99,7 @@ const ProjectManagement = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this project? All associated units will need to be deleted first.')) return
     try {
-      await axios.delete(`/api/admin/projects/${id}`)
+      await api.delete(`/admin/projects/${id}`)
       toast.success('Project deleted successfully')
       fetchProjects()
     } catch (error) {
@@ -109,7 +109,7 @@ const ProjectManagement = () => {
 
   const handleToggleStatus = async (id) => {
     try {
-      await axios.put(`/api/admin/projects/${id}/toggle-status`)
+      await api.put(`/admin/projects/${id}/toggle-status`)
       toast.success('Project status updated')
       fetchProjects()
     } catch (error) {
@@ -119,7 +119,7 @@ const ProjectManagement = () => {
 
   const handleToggleFeatured = async (id) => {
     try {
-      await axios.put(`/api/admin/projects/${id}/toggle-featured`)
+      await api.put(`/admin/projects/${id}/toggle-featured`)
       toast.success('Project featured status updated')
       fetchProjects()
     } catch (error) {

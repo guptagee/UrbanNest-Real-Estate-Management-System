@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../utils/api'
 import { FiArrowRight, FiCheck, FiHome, FiSearch, FiShield, FiTrendingUp, FiUsers, FiZap } from 'react-icons/fi'
 import PropertyCard from '../components/PropertyCard'
 import ProjectCard from '../components/ProjectCard'
@@ -19,7 +19,7 @@ const Home = () => {
 
   const fetchFeaturedProjects = async () => {
     try {
-      const response = await axios.get('/api/projects?featured=true&limit=3')
+      const response = await api.get('/projects?featured=true&limit=3')
       setFeaturedProjects(response.data.data)
     } catch (error) {
       console.error('Error fetching featured projects:', error)
@@ -29,7 +29,7 @@ const Home = () => {
   const fetchFeaturedProperties = async () => {
     try {
       // Fetch latest 6 properties regardless of featured status to ensure user listings appear
-      const response = await axios.get('/api/properties?limit=6')
+      const response = await api.get('/properties?limit=6')
       setFeaturedProperties(response.data.data)
     } catch (error) {
       console.error('Error fetching featured properties:', error)
@@ -54,41 +54,37 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#F7F7F7]">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 pt-32 pb-24 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-white via-[#F7F7F7] to-white pt-32 pb-24 overflow-hidden">
         {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-900/20"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#0E0E0E]/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-[#0E0E0E]/5 to-transparent rounded-full blur-3xl" />
 
         <div className="max-w-7xl mx-auto px-8 lg:px-24 relative z-10">
           <div className="max-w-4xl animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6 tracking-tight">
-              Find your perfect
-              <span className="block bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent"> dream home 🏠</span>
+            <h1 className="text-5xl md:text-6xl font-bold text-[#0E0E0E] leading-tight mb-6 tracking-tight">
+              Find your perfect space.
             </h1>
-            <p className="text-xl text-blue-100 mb-8 leading-relaxed max-w-2xl">
+            <p className="text-xl text-[#6B6B6B] mb-8 leading-relaxed max-w-2xl">
               Urbannest is your trusted partner for finding premium properties.
-              Discover apartments, villas, and new developments across India.
+              Discover apartments, villas, and new developments in Rajkot and across India.
             </p>
 
-            {/* Enhanced Search Bar */}
-            <form onSubmit={handleSearch} className="mb-8 max-w-2xl relative z-10 animate-slide-in-left">
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="mb-8 max-w-xl relative z-10 animate-slide-in-left">
               <div className="relative flex items-center group">
-                <div className="absolute left-4 text-white/70 w-5 h-5 group-focus-within:text-white transition-colors">
-                  <FiSearch />
-                </div>
+                <FiSearch className="absolute left-4 text-gray-400 w-5 h-5 group-focus-within:text-[#0E0E0E] transition-colors" />
                 <input
                   type="text"
                   placeholder="Search by city, locality, or project..."
-                  className="w-full pl-12 pr-32 py-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent shadow-2xl hover:shadow-3xl text-white placeholder-white/60 transition-all"
+                  className="w-full pl-12 pr-32 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0E0E0E] focus:border-transparent shadow-lg hover:shadow-xl text-gray-900 bg-white transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 bg-white text-blue-600 px-8 py-3 rounded-xl hover:bg-blue-50 hover:shadow-2xl transition-all text-sm font-bold shadow-lg"
+                  className="absolute right-2 bg-[#0E0E0E] text-white px-6 py-2.5 rounded-lg hover:bg-[#1A1A1A] hover:shadow-lg transition-all text-sm font-medium"
                 >
-                  Search Properties
+                  Search
                 </button>
               </div>
             </form>
@@ -96,14 +92,14 @@ const Home = () => {
             <div className="flex items-center gap-4 animate-slide-in-right">
               <Link
                 to="/properties"
-                className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-blue-50 hover:shadow-2xl transition-all text-sm font-bold inline-flex items-center gap-2 shadow-xl"
+                className="bg-[#0E0E0E] text-white px-6 py-3 rounded-lg hover:bg-[#1A1A1A] hover:shadow-lg transition-all text-sm font-medium inline-flex items-center gap-2 shadow-md"
               >
                 Explore Properties
                 <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/projects"
-                className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-xl hover:bg-white/20 hover:shadow-xl transition-all text-sm font-bold border border-white/20"
+                className="text-[#0E0E0E] px-6 py-3 rounded-lg hover:bg-[#F7F7F7] hover:shadow-md transition-all text-sm font-medium border border-[#E6E6E6]"
               >
                 New Projects
               </Link>
@@ -113,24 +109,24 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-gray-50 to-blue-50 border-y border-gray-200">
+      <section className="py-16 bg-white border-y border-[#E6E6E6]">
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="group hover-lift cursor-default text-center">
-              <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">500+</div>
-              <div className="text-sm text-gray-600 font-semibold">Properties Listed</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+            <div className="group hover-lift cursor-default">
+              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">500+</div>
+              <div className="text-sm text-[#6B6B6B] font-medium">Properties Listed</div>
             </div>
-            <div className="group hover-lift cursor-default text-center">
-              <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">2,000+</div>
-              <div className="text-sm text-gray-600 font-semibold">Happy Customers</div>
+            <div className="group hover-lift cursor-default">
+              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">2,000+</div>
+              <div className="text-sm text-[#6B6B6B] font-medium">Happy Customers</div>
             </div>
-            <div className="group hover-lift cursor-default text-center">
-              <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">15+</div>
-              <div className="text-sm text-gray-600 font-semibold">Cities Covered</div>
+            <div className="group hover-lift cursor-default">
+              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">15+</div>
+              <div className="text-sm text-[#6B6B6B] font-medium">Cities Covered</div>
             </div>
-            <div className="group hover-lift cursor-default text-center">
-              <div className="text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">₹500Cr+</div>
-              <div className="text-sm text-gray-600 font-semibold">Property Value Sold</div>
+            <div className="group hover-lift cursor-default">
+              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">₹500Cr+</div>
+              <div className="text-sm text-[#6B6B6B] font-medium">Property Value Sold</div>
             </div>
           </div>
         </div>

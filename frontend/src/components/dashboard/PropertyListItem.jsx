@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiEdit2, FiTrash2 } from 'react-icons/fi'
-import axios from 'axios'
+import api from '../../utils/api'
 import toast from 'react-hot-toast'
 
 const PropertyListItem = ({ property, onUpdate }) => {
@@ -13,7 +13,7 @@ const PropertyListItem = ({ property, onUpdate }) => {
         const newStatus = e.target.value
         setIsToggling(true)
         try {
-            await axios.put(`/api/properties/${property._id}`, { status: newStatus })
+            await api.put(`/properties/${property._id}`, { status: newStatus })
             toast.success('Property status updated')
             if (onUpdate) onUpdate()
         } catch (error) {
@@ -28,7 +28,7 @@ const PropertyListItem = ({ property, onUpdate }) => {
         if (!window.confirm('Are you sure you want to delete this property?')) return
 
         try {
-            await axios.delete(`/api/properties/${property._id}`)
+            await api.delete(`/properties/${property._id}`)
             toast.success('Property deleted successfully')
             if (onUpdate) onUpdate()
         } catch (error) {

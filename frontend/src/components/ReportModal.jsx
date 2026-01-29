@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FiAlertTriangle, FiX } from 'react-icons/fi'
-import axios from 'axios'
+import api from '../utils/api'
 import toast from 'react-hot-toast'
 
 const ReportModal = ({ isOpen, onClose, propertyId, targetUserId, propertyTitle }) => {
@@ -17,7 +17,7 @@ const ReportModal = ({ isOpen, onClose, propertyId, targetUserId, propertyTitle 
     setLoading(true)
 
     try {
-      await axios.post('/api/reports', {
+      await api.post('/reports', {
         property: propertyId,
         targetUser: targetUserId,
         subject: formData.subject,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import DashboardLayout from '../components/DashboardLayout'
 import StatsCard from '../components/dashboard/StatsCard'
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/admin/stats')
+      const response = await api.get('/admin/stats')
       setStats(response.data.data)
       setLoading(false)
     } catch (error) {
@@ -72,42 +72,42 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`/api/admin/users?search=${searchTerm}`)
+      const response = await api.get(`/admin/users?search=${searchTerm}`)
       setUsers(response.data.data)
     } catch (error) { toast.error('Failed to load users') }
   }
 
   const fetchProperties = async () => {
     try {
-      const response = await axios.get(`/api/admin/properties?search=${searchTerm}`)
+      const response = await api.get(`/admin/properties?search=${searchTerm}`)
       setProperties(response.data.data)
     } catch (error) { toast.error('Failed to load properties') }
   }
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get(`/api/admin/bookings`)
+      const response = await api.get('/admin/bookings')
       setBookings(response.data.data)
     } catch (error) { toast.error('Failed to load bookings') }
   }
 
   const fetchInquiries = async () => {
     try {
-      const response = await axios.get(`/api/admin/inquiries`)
+      const response = await api.get('/admin/inquiries')
       setInquiries(response.data.data)
     } catch (error) { toast.error('Failed to load inquiries') }
   }
 
   const fetchReports = async () => {
     try {
-      const response = await axios.get(`/api/admin/reports`)
+      const response = await api.get('/admin/reports')
       setReports(response.data.data)
     } catch (error) { toast.error('Failed to load reports') }
   }
 
   const handleUpdateUserRole = async (id, role) => {
     try {
-      await axios.put(`/api/admin/users/${id}`, { role })
+      await api.put(`/admin/users/${id}`, { role })
       toast.success('User role updated')
       fetchUsers()
       fetchStats()
@@ -118,7 +118,7 @@ const AdminDashboard = () => {
 
   const handleToggleUserStatus = async (id, currentStatus, field) => {
     try {
-      await axios.put(`/api/admin/users/${id}`, { [field]: !currentStatus })
+      await api.put(`/admin/users/${id}`, { [field]: !currentStatus })
       toast.success(`User ${field === 'isActive' ? 'activation' : 'block'} status updated`)
       fetchUsers()
       fetchStats()
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
   const handleDeleteUser = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user? This will also delete their listings and bookings.')) return
     try {
-      await axios.delete(`/api/admin/users/${id}`)
+      await api.delete(`/admin/users/${id}`)
       toast.success('User deleted')
       fetchUsers()
       fetchStats()
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
 
   const handleUpdatePropertyStatus = async (id, status) => {
     try {
-      await axios.put(`/api/admin/properties/${id}/status`, { status })
+      await api.put(`/admin/properties/${id}/status`, { status })
       toast.success(`Property marked as ${status}`)
       fetchProperties()
       fetchStats()
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
   const handleDeleteProperty = async (id) => {
     if (!window.confirm('Are you sure you want to delete this listing?')) return
     try {
-      await axios.delete(`/api/admin/properties/${id}`)
+      await api.delete(`/admin/properties/${id}`)
       toast.success('Listing removed')
       fetchProperties()
       fetchStats()
@@ -158,7 +158,7 @@ const AdminDashboard = () => {
 
   const handleUpdateBookingStatus = async (id, status) => {
     try {
-      await axios.put(`/api/admin/bookings/${id}/status`, { status })
+      await api.put(`/admin/bookings/${id}/status`, { status })
       toast.success(`Booking marked as ${status}`)
       fetchBookings()
       fetchStats()
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
 
   const handleUpdateInquiryStatus = async (id, status) => {
     try {
-      await axios.put(`/api/admin/inquiries/${id}`, { status })
+      await api.put(`/admin/inquiries/${id}`, { status })
       toast.success('Inquiry status updated')
       fetchInquiries()
       fetchStats()
@@ -176,7 +176,7 @@ const AdminDashboard = () => {
 
   const handleUpdateReportStatus = async (id, status) => {
     try {
-      await axios.put(`/api/admin/reports/${id}`, { status })
+      await api.put(`/admin/reports/${id}`, { status })
       toast.success('Report updated')
       fetchReports()
       fetchStats()

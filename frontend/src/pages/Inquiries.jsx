@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import DashboardLayout from '../components/DashboardLayout'
 import toast from 'react-hot-toast'
@@ -20,7 +20,7 @@ const Inquiries = () => {
         try {
             setLoading(true)
             const params = filter !== 'all' ? `?status=${filter}` : ''
-            const response = await axios.get(`/api/inquiries${params}`)
+            const response = await api.get(`/inquiries${params}`)
             setInquiries(response.data.data)
         } catch (error) {
             console.error('Error fetching inquiries:', error)
@@ -32,7 +32,7 @@ const Inquiries = () => {
 
     const handleStatusUpdate = async (inquiryId, newStatus) => {
         try {
-            await axios.put(`/api/inquiries/${inquiryId}`, { status: newStatus })
+            await api.put(`/inquiries/${inquiryId}`, { status: newStatus })
             toast.success('Inquiry status updated')
             fetchInquiries()
         } catch (error) {
@@ -44,7 +44,7 @@ const Inquiries = () => {
         if (!window.confirm('Are you sure you want to delete this inquiry?')) return
 
         try {
-            await axios.delete(`/api/inquiries/${inquiryId}`)
+            await api.delete(`/inquiries/${inquiryId}`)
             toast.success('Inquiry deleted')
             fetchInquiries()
         } catch (error) {

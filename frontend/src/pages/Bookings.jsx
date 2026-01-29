@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import DashboardLayout from '../components/DashboardLayout'
 import { FiCalendar, FiClock, FiUser, FiHome, FiX, FiCheck, FiSearch, FiFilter } from 'react-icons/fi'
@@ -41,7 +41,7 @@ const Bookings = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get('/api/bookings')
+      const response = await api.get('/bookings')
       setBookings(response.data.data)
       setFilteredBookings(response.data.data)
     } catch (error) {
@@ -54,7 +54,7 @@ const Bookings = () => {
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
     try {
-      await axios.put(`/api/bookings/${bookingId}`, { status: newStatus })
+      await api.put(`/bookings/${bookingId}`, { status: newStatus })
       toast.success('Booking status updated')
       fetchBookings()
     } catch (error) {
@@ -68,7 +68,7 @@ const Bookings = () => {
     }
 
     try {
-      await axios.delete(`/api/bookings/${bookingId}`)
+      await api.delete(`/bookings/${bookingId}`)
       toast.success('Booking cancelled')
       fetchBookings()
     } catch (error) {

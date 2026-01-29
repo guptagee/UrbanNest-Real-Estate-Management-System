@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { BsStars, BsSearch } from 'react-icons/bs';
 import PropertyCard from './PropertyCard';
 import toast from 'react-hot-toast';
@@ -19,7 +19,7 @@ const AIRecommendations = () => {
         setSearched(true);
 
         try {
-            const response = await axios.post('/api/ai/recommend', { query });
+            const response = await api.post('/ai/recommend', { query });
             setResults(response.data);
             if (response.data.count === 0) {
                 toast('No properties found matching your criteria, but keep looking!');

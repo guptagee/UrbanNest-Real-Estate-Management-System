@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import ProjectCard from '../components/ProjectCard'
 import { FiSearch, FiFilter } from 'react-icons/fi'
 
@@ -37,7 +37,7 @@ const Projects = () => {
         if (value) params.append(key, value)
       })
 
-      const response = await axios.get(`/api/projects?${params.toString()}`)
+      const response = await api.get(`/projects?${params.toString()}`)
       setProjects(response.data.data || [])
     } catch (error) {
       console.error('Error fetching projects:', error)

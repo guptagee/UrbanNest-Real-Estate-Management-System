@@ -1,6 +1,22 @@
 const mongoose = require('mongoose');
 const Property = require('./models/Property');
+const User = require('./models/User');
 require('dotenv').config();
+
+// Helper function to get or create a default user
+const getDefaultUser = async () => {
+  let user = await User.findOne({ email: 'agent@urbannest.com' });
+  if (!user) {
+    user = await User.create({
+      name: 'Default Agent',
+      email: 'agent@urbannest.com',
+      password: 'password123',
+      role: 'agent',
+      phone: '+91 9876543210'
+    });
+  }
+  return user._id;
+};
 
 const sampleProperties = [
   {
@@ -19,7 +35,7 @@ const sampleProperties = [
     bathrooms: 2,
     area: 1200,
     areaUnit: "sqft",
-    images: ["/property1.jpg"],
+    images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop"],
     amenities: ["gym", "parking", "pool", "security", "lift"],
     status: "available",
     featured: true
@@ -40,7 +56,7 @@ const sampleProperties = [
     bathrooms: 2,
     area: 950,
     areaUnit: "sqft",
-    images: ["/property2.jpg"],
+    images: ["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop"],
     amenities: ["parking", "security", "garden"],
     status: "available",
     featured: false
@@ -61,7 +77,7 @@ const sampleProperties = [
     bathrooms: 3,
     area: 2500,
     areaUnit: "sqft",
-    images: ["/property3.jpg"],
+    images: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop"],
     amenities: ["garden", "parking", "security", "pool"],
     status: "available",
     featured: true
@@ -82,7 +98,7 @@ const sampleProperties = [
     bathrooms: 1,
     area: 650,
     areaUnit: "sqft",
-    images: ["/property4.jpg"],
+    images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop"],
     amenities: ["parking", "security"],
     status: "available",
     featured: false
@@ -103,7 +119,7 @@ const sampleProperties = [
     bathrooms: 2,
     area: 1800,
     areaUnit: "sqft",
-    images: ["/property5.jpg"],
+    images: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop"],
     amenities: ["parking", "security"],
     status: "available",
     featured: false
@@ -117,12 +133,22 @@ async function seedProperties() {
 
     console.log('Connected to MongoDB');
 
+    // Get or create default user
+    const defaultUserId = await getDefaultUser();
+    console.log('Default user ID:', defaultUserId);
+
     // Clear existing properties
     await Property.deleteMany({});
     console.log('Cleared existing properties');
 
+    // Add owner field to all sample properties
+    const propertiesWithOwner = sampleProperties.map(property => ({
+      ...property,
+      owner: defaultUserId
+    }));
+
     // Add sample properties
-    const properties = await Property.insertMany(sampleProperties);
+    const properties = await Property.insertMany(propertiesWithOwner);
     console.log(`Added ${properties.length} sample properties`);
 
     console.log('Sample properties added successfully!');

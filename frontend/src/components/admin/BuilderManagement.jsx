@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../../utils/api'
 import toast from 'react-hot-toast'
 import { FiPlus, FiEdit, FiTrash2, FiSearch, FiToggleLeft, FiToggleRight,} from 'react-icons/fi'
 import { FaBuilding } from 'react-icons/fa'
@@ -37,7 +37,7 @@ const BuilderManagement = () => {
   const fetchBuilders = async () => {
     try {
       const params = searchTerm ? { search: searchTerm } : {}
-      const response = await axios.get('/api/admin/builders', { params })
+      const response = await api.get('/admin/builders', { params })
       setBuilders(response.data.data || [])
     } catch (error) {
       toast.error('Failed to load builders')
@@ -51,10 +51,10 @@ const BuilderManagement = () => {
     e.preventDefault()
     try {
       if (editingBuilder) {
-        await axios.put(`/api/admin/builders/${editingBuilder._id}`, formData)
+        await api.put(`/admin/builders/${editingBuilder._id}`, formData)
         toast.success('Builder updated successfully')
       } else {
-        await axios.post('/api/admin/builders', formData)
+        await api.post('/admin/builders', formData)
         toast.success('Builder created successfully')
       }
       setShowForm(false)
@@ -93,7 +93,7 @@ const BuilderManagement = () => {
     if (!window.confirm('Are you sure you want to delete this builder?')) return
 
     try {
-      await axios.delete(`/api/admin/builders/${id}`)
+      await api.delete(`/admin/builders/${id}`)
       toast.success('Builder deleted successfully')
       fetchBuilders()
     } catch (error) {
@@ -103,7 +103,7 @@ const BuilderManagement = () => {
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {
-      await axios.put(`/api/admin/builders/${id}/toggle-status`)
+      await api.put(`/admin/builders/${id}/toggle-status`)
       toast.success(`Builder ${!currentStatus ? 'activated' : 'deactivated'}`)
       fetchBuilders()
     } catch (error) {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiArrowLeft, FiUpload } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
@@ -101,7 +101,7 @@ const CreateProperty = () => {
 
     const toastId = toast.loading('Generating description...');
     try {
-      const response = await axios.post('/api/ai/description', {
+      const response = await api.post('/ai/description', {
         propertyType,
         location: location, // Pass the whole location object or construct string
         area: `${area} ${formData.areaUnit}`,
@@ -150,7 +150,7 @@ const CreateProperty = () => {
         area: Number(formData.area)
       }
 
-      const response = await axios.post('/api/properties', propertyData)
+      const response = await api.post('/properties', propertyData)
       toast.success('Property created successfully!')
       navigate(`/properties/${response.data.data._id}`)
     } catch (error) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import DashboardLayout from '../components/DashboardLayout'
 import toast from 'react-hot-toast'
@@ -28,7 +28,7 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get('/api/users/profile')
+      const response = await api.get('/users/profile')
       const userData = response.data.data
       setUser(userData)
       setFormData({
@@ -86,7 +86,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.put('/api/users/profile', {
+      await api.put('/users/profile', {
         name: formData.name,
         phone: formData.phone
       })
@@ -100,7 +100,7 @@ const Profile = () => {
   const handlePreferencesSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.put('/api/users/preferences', formData.preferences)
+      await api.put('/users/preferences', formData.preferences)
       toast.success('Preferences updated successfully')
     } catch (error) {
       toast.error('Failed to update preferences')

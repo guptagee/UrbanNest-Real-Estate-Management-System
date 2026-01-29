@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../../utils/api'
 import toast from 'react-hot-toast'
 import { FiPlus, FiEdit, FiTrash2, FiSearch, FiBox } from 'react-icons/fi'
 
@@ -37,7 +37,7 @@ const UnitManagement = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/admin/projects', { params: { isActive: 'true' } })
+      const response = await api.get('/admin/projects', { params: { isActive: 'true' } })
       setProjects(response.data.data || [])
     } catch (error) {
       console.error('Failed to load projects:', error)
@@ -49,7 +49,7 @@ const UnitManagement = () => {
       const params = {}
       if (searchTerm) params.search = searchTerm
       if (filterProject) params.project = filterProject
-      const response = await axios.get('/api/admin/units', { params })
+      const response = await api.get('/admin/units', { params })
       setUnits(response.data.data || [])
     } catch (error) {
       toast.error('Failed to load units')
@@ -70,10 +70,10 @@ const UnitManagement = () => {
         balconies: parseInt(formData.balconies) || 0
       }
       if (editingUnit) {
-        await axios.put(`/api/admin/units/${editingUnit._id}`, data)
+        await api.put(`/admin/units/${editingUnit._id}`, data)
         toast.success('Unit updated successfully')
       } else {
-        await axios.post('/api/admin/units', data)
+        await api.post('/admin/units', data)
         toast.success('Unit created successfully')
       }
       setShowForm(false)
@@ -110,7 +110,7 @@ const UnitManagement = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this unit?')) return
     try {
-      await axios.delete(`/api/admin/units/${id}`)
+      await api.delete(`/admin/units/${id}`)
       toast.success('Unit deleted successfully')
       fetchUnits()
     } catch (error) {
@@ -120,7 +120,7 @@ const UnitManagement = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.put(`/api/admin/units/${id}/availability`, { availabilityStatus: status })
+      await api.put(`/admin/units/${id}/availability`, { availabilityStatus: status })
       toast.success('Unit status updated')
       fetchUnits()
     } catch (error) {

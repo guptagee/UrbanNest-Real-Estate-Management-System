@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import DashboardLayout from '../components/DashboardLayout'
 import PropertyListItem from '../components/dashboard/PropertyListItem'
@@ -29,9 +29,9 @@ const AgentDashboard = () => {
     try {
       setLoading(true)
       const [propertiesRes, bookingsRes, inquiriesRes] = await Promise.all([
-        axios.get('/api/users/my-properties'),
-        axios.get('/api/bookings').catch(() => ({ data: { data: [] } })),
-        axios.get('/api/inquiries?status=new').catch(() => ({ data: { data: [] } }))
+        api.get('/users/my-properties'),
+        api.get('/bookings').catch(() => ({ data: { data: [] } })),
+        api.get('/inquiries?status=new').catch(() => ({ data: { data: [] } }))
       ])
 
       const properties = propertiesRes.data.data

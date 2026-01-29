@@ -33,6 +33,7 @@ exports.protect = async (req, res, next) => {
     const user = await User.findById(decoded.id).select('-password');
     if (user) {
       req.user = user;
+      req.user.role = user.role; // Add role for authorization middleware
       req.userType = 'user';
       return next();
     }

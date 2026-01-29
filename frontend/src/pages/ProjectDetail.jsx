@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { FiMapPin, FiCalendar, FiMessageSquare, FiStar, FiCheckCircle } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -30,13 +30,13 @@ const ProjectDetail = () => {
 
   const fetchProject = async () => {
     try {
-      const response = await axios.get(`/api/projects/${id}`)
+      const response = await api.get(`/projects/${id}`)
       const projectData = response.data.data
       setProject(projectData)
 
       // Fetch units
       try {
-        const unitsRes = await axios.get(`/api/units?project=${id}`)
+        const unitsRes = await api.get(`/units?project=${id}`)
         setUnits(unitsRes.data.data || [])
       } catch (error) {
         console.error('Failed to fetch units:', error)
@@ -44,7 +44,7 @@ const ProjectDetail = () => {
 
       // Fetch similar projects
       try {
-        const similarRes = await axios.get(`/api/projects?projectType=${projectData.projectType}&city=${projectData.location?.city}`)
+        const similarRes = await api.get(`/projects?projectType=${projectData.projectType}&city=${projectData.location?.city}`)
         const similar = (similarRes.data.data || []).filter(p => p._id !== id).slice(0, 3)
         setSimilarProjects(similar)
       } catch (error) {
@@ -73,7 +73,7 @@ const ProjectDetail = () => {
     }
 
     try {
-      await axios.post('/api/inquiries', {
+      await api.post('/inquiries', {
         project: id,
         ...inquiryData
       })

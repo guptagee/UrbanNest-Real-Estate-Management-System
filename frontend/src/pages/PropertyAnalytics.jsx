@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiArrowLeft, FiEye, FiCalendar, FiMessageCircle, FiTrendingUp, FiUsers } from 'react-icons/fi'
 
@@ -19,8 +19,8 @@ const PropertyAnalytics = () => {
         try {
             setLoading(true)
             const [propertyRes, analyticsRes] = await Promise.all([
-                axios.get(`/api/properties/${id}`),
-                axios.get(`/api/properties/${id}/analytics`)
+                api.get(`/properties/${id}`),
+                api.get(`/properties/${id}/analytics`)
             ])
             setProperty(propertyRes.data.data)
             setAnalytics(analyticsRes.data.data)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import toast from 'react-hot-toast'
 import { FiArrowLeft } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
@@ -39,7 +39,7 @@ const EditProperty = () => {
 
   const fetchProperty = async () => {
     try {
-      const response = await axios.get(`/api/properties/${id}`)
+      const response = await api.get(`/properties/${id}`)
       const property = response.data.data
       
       setFormData({
@@ -142,7 +142,7 @@ const EditProperty = () => {
         area: Number(formData.area)
       }
 
-      await axios.put(`/api/properties/${id}`, propertyData)
+      await api.put(`/properties/${id}`, propertyData)
       toast.success('Property updated successfully!')
       navigate(`/properties/${id}`)
     } catch (error) {
