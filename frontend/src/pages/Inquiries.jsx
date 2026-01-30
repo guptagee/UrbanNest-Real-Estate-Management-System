@@ -55,15 +55,15 @@ const Inquiries = () => {
     const getStatusColor = (status) => {
         switch (status) {
             case 'new':
-                return 'bg-blue-100 text-blue-800'
+                return 'bg-blue-50 text-blue-600'
             case 'contacted':
-                return 'bg-yellow-100 text-yellow-800'
+                return 'bg-amber-50 text-amber-600'
             case 'converted':
-                return 'bg-green-100 text-green-800'
+                return 'bg-emerald-50 text-emerald-600'
             case 'closed':
-                return 'bg-gray-100 text-gray-800'
+                return 'bg-gray-50 text-gray-600'
             default:
-                return 'bg-gray-100 text-gray-800'
+                return 'bg-gray-50 text-gray-600'
         }
     }
 
@@ -81,7 +81,7 @@ const Inquiries = () => {
         return (
             <DashboardLayout user={user}>
                 <div className="flex justify-center items-center min-h-screen">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
                 </div>
             </DashboardLayout>
         )
@@ -90,20 +90,21 @@ const Inquiries = () => {
     return (
         <DashboardLayout user={user}>
             <div className="space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Inquiries & Leads</h1>
-                    <p className="text-gray-500 mt-1">Manage property inquiries and convert leads</p>
+                {/* Header */}
+                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                    <h1 className="text-2xl font-bold text-gray-900 mb-1">Inquiries & Leads</h1>
+                    <p className="text-gray-600 text-sm">Manage property inquiries and convert leads</p>
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2 flex gap-2 overflow-x-auto">
+                <div className="bg-white border border-gray-200 rounded-xl p-2 flex gap-2 overflow-x-auto">
                     {['all', 'new', 'contacted', 'converted', 'closed'].map((status) => (
                         <button
                             key={status}
                             onClick={() => setFilter(status)}
-                            className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${filter === status
-                                    ? 'bg-primary-600 text-white'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                            className={`px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-colors ${filter === status
+                                ? 'bg-purple-600 text-white'
+                                : 'text-gray-600 hover:bg-gray-50'
                                 }`}
                         >
                             {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -113,12 +114,12 @@ const Inquiries = () => {
 
                 {/* Inquiries List */}
                 {inquiries.length === 0 ? (
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
-                        <FiMessageCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
+                        <FiMessageCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                         <p className="text-gray-600 text-lg mb-4">No inquiries found</p>
                         <Link
                             to="/properties"
-                            className="text-primary-600 hover:text-primary-700 font-medium"
+                            className="text-purple-600 hover:text-purple-700 font-semibold"
                         >
                             View Properties →
                         </Link>
@@ -128,7 +129,7 @@ const Inquiries = () => {
                         {inquiries.map((inquiry) => (
                             <div
                                 key={inquiry._id}
-                                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow"
+                                className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
                             >
                                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                                     {/* Inquiry Details */}
@@ -139,13 +140,13 @@ const Inquiries = () => {
                                                 <img
                                                     src={inquiry.property.images[0]}
                                                     alt={inquiry.property.title}
-                                                    className="w-20 h-20 rounded-lg object-cover"
+                                                    className="w-20 h-20 rounded-xl object-cover"
                                                 />
                                             )}
                                             <div className="flex-1">
                                                 <Link
                                                     to={`/properties/${inquiry.property?._id}`}
-                                                    className="text-lg font-semibold text-gray-900 hover:text-primary-600 mb-1 block"
+                                                    className="text-lg font-bold text-gray-900 hover:text-purple-600 mb-1 block"
                                                 >
                                                     {inquiry.property?.title}
                                                 </Link>
@@ -159,12 +160,12 @@ const Inquiries = () => {
                                         </div>
 
                                         {/* User Info */}
-                                        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                                            <div className="flex items-center gap-2 mb-2">
+                                        <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                            <div className="flex items-center gap-2 mb-3">
                                                 <FiUser className="w-4 h-4 text-gray-600" />
                                                 <span className="font-semibold text-gray-900">{inquiry.user?.name}</span>
-                                                <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(inquiry.status)}`}>
-                                                    {inquiry.status}
+                                                <span className={`ml-auto px-3 py-1 rounded-lg text-xs font-bold ${getStatusColor(inquiry.status)}`}>
+                                                    {inquiry.status.toUpperCase()}
                                                 </span>
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
@@ -183,7 +184,7 @@ const Inquiries = () => {
 
                                         {/* Message */}
                                         {inquiry.message && (
-                                            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
                                                 <p className="text-sm text-gray-700">{inquiry.message}</p>
                                             </div>
                                         )}
@@ -207,7 +208,7 @@ const Inquiries = () => {
                                             {inquiry.status === 'new' && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(inquiry._id, 'contacted')}
-                                                    className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center justify-center gap-2 text-sm font-medium"
+                                                    className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center justify-center gap-2 text-sm font-semibold"
                                                 >
                                                     <FiMessageCircle className="w-4 h-4" />
                                                     Mark Contacted
@@ -216,7 +217,7 @@ const Inquiries = () => {
                                             {inquiry.status === 'contacted' && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(inquiry._id, 'converted')}
-                                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2 text-sm font-medium"
+                                                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 text-sm font-semibold"
                                                 >
                                                     <FiCheck className="w-4 h-4" />
                                                     Mark Converted
@@ -225,7 +226,7 @@ const Inquiries = () => {
                                             {inquiry.status !== 'closed' && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(inquiry._id, 'closed')}
-                                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2 text-sm font-medium"
+                                                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2 text-sm font-semibold"
                                                 >
                                                     <FiX className="w-4 h-4" />
                                                     Close
@@ -233,7 +234,7 @@ const Inquiries = () => {
                                             )}
                                             <button
                                                 onClick={() => handleDelete(inquiry._id)}
-                                                className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 flex items-center justify-center gap-2 text-sm font-medium"
+                                                className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 flex items-center justify-center gap-2 text-sm font-semibold"
                                             >
                                                 <FiX className="w-4 h-4" />
                                                 Delete

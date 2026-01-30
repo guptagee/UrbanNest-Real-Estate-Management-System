@@ -33,7 +33,7 @@ const CreateProperty = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
-    
+
     if (name.startsWith('location.')) {
       const locationField = name.split('.')[1]
       setFormData(prev => ({
@@ -93,7 +93,7 @@ const CreateProperty = () => {
 
   const handleGenerateDescription = async () => {
     const { propertyType, location, area, bedrooms, bathrooms, price, amenities } = formData;
-    
+
     if (!propertyType || !location.city || !price) {
       toast.error('Please fill in Property Type, City, and Price to generate a description.');
       return;
@@ -128,9 +128,9 @@ const CreateProperty = () => {
 
     try {
       // Validate required fields
-      if (!formData.title || !formData.description || !formData.propertyType || 
-          !formData.price || !formData.location.address || !formData.location.city || 
-          !formData.location.state || !formData.location.zipCode || !formData.area) {
+      if (!formData.title || !formData.description || !formData.propertyType ||
+        !formData.price || !formData.location.address || !formData.location.city ||
+        !formData.location.state || !formData.location.zipCode || !formData.area) {
         toast.error('Please fill in all required fields')
         setLoading(false)
         return
@@ -174,7 +174,7 @@ const CreateProperty = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 text-primary-600 hover:text-primary-700 flex items-center"
+          className="mb-4 text-purple-600 hover:text-purple-700 flex items-center"
         >
           <FiArrowLeft className="mr-2" />
           Back
@@ -199,7 +199,7 @@ const CreateProperty = () => {
                     onChange={handleChange}
                     required
                     placeholder="e.g., Beautiful 3BHK Apartment in Mumbai"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
 
@@ -223,7 +223,7 @@ const CreateProperty = () => {
                     required
                     rows="4"
                     placeholder="Describe the property in detail..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
 
@@ -237,7 +237,7 @@ const CreateProperty = () => {
                       value={formData.propertyType}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="">Select Type</option>
                       <option value="house">House</option>
@@ -258,7 +258,7 @@ const CreateProperty = () => {
                       name="status"
                       value={formData.status}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="available">Available</option>
                       <option value="pending">Pending</option>
@@ -285,7 +285,7 @@ const CreateProperty = () => {
                     onChange={handleChange}
                     required
                     placeholder="Street address, Building name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
 
@@ -301,7 +301,7 @@ const CreateProperty = () => {
                       onChange={handleChange}
                       required
                       placeholder="e.g., Mumbai"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
 
@@ -314,7 +314,7 @@ const CreateProperty = () => {
                       value={formData.location.state}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="">Select State</option>
                       {indianStates.map(state => (
@@ -337,7 +337,7 @@ const CreateProperty = () => {
                     placeholder="e.g., 400001"
                     pattern="[0-9]{6}"
                     maxLength="6"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
               </div>
@@ -359,7 +359,7 @@ const CreateProperty = () => {
                     required
                     min="0"
                     placeholder="e.g., 5000000"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
 
@@ -376,13 +376,13 @@ const CreateProperty = () => {
                       required
                       min="0"
                       placeholder="e.g., 1200"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                     <select
                       name="areaUnit"
                       value={formData.areaUnit}
                       onChange={handleChange}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="sqm">sqm</option>
                       <option value="sqft">sqft</option>
@@ -401,7 +401,7 @@ const CreateProperty = () => {
                     onChange={handleChange}
                     min="0"
                     placeholder="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
 
@@ -416,7 +416,7 @@ const CreateProperty = () => {
                     onChange={handleChange}
                     min="0"
                     placeholder="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
               </div>
@@ -432,7 +432,7 @@ const CreateProperty = () => {
                   onChange={(e) => setAmenityInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAmenity())}
                   placeholder="e.g., Swimming Pool, Gym, Parking"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <button
                   type="button"
@@ -447,13 +447,13 @@ const CreateProperty = () => {
                   {formData.amenities.map((amenity, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm flex items-center gap-2"
+                      className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-2"
                     >
                       {amenity}
                       <button
                         type="button"
                         onClick={() => handleRemoveAmenity(amenity)}
-                        className="text-primary-600 hover:text-primary-800"
+                        className="text-purple-600 hover:text-purple-800"
                       >
                         ×
                       </button>
@@ -472,7 +472,7 @@ const CreateProperty = () => {
                   onBlur={handleImageAdd}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleImageAdd(e))}
                   placeholder="Enter image URL and press Enter"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 {formData.images.length > 0 && (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
@@ -508,7 +508,7 @@ const CreateProperty = () => {
                   name="featured"
                   checked={formData.featured}
                   onChange={handleChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                 />
                 <label className="ml-2 text-sm font-medium text-gray-700">
                   Mark as Featured Property
@@ -521,14 +521,14 @@ const CreateProperty = () => {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100"
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating...' : 'Create Property'}
               </button>

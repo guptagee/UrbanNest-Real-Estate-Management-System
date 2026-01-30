@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
+import { FaGoogle, FaApple, FaFacebook } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 
 const Register = () => {
@@ -13,6 +15,8 @@ const Register = () => {
     role: 'user'
   })
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { register } = useAuth()
   const navigate = useNavigate()
 
@@ -40,150 +44,163 @@ const Register = () => {
 
     const { confirmPassword, ...registerData } = formData
     const result = await register(registerData)
-    
+
     if (result.success) {
       navigate('/dashboard')
     }
-    
+
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        {/* Logo/Brand */}
-        <div className="text-center mb-12">
-          <Link to="/" className="text-xl font-medium text-[#0E0E0E] tracking-tight">
-            Urbannest
-          </Link>
-        </div>
-
-        {/* Form Card */}
-        <div className="bg-white border border-[#E6E6E6] rounded-xl p-8">
-          <div className="mb-8">
-            <h1 className="text-2xl font-medium text-[#0E0E0E] mb-2">
-              Create an account
+    <div className="min-h-screen flex">
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-white">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Join UrbanNest
             </h1>
-            <p className="text-sm text-[#6B6B6B]">
-              Already have an account?{' '}
-              <Link 
-                to="/login" 
-                className="text-[#0E0E0E] hover:opacity-70 transition-opacity font-normal underline underline-offset-2"
-              >
-                Sign in
-              </Link>
+            <p className="text-gray-600">
+              Create your account and start your property journey today.
             </p>
           </div>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4 animate-scale-in">
+            {/* Name Input */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-[#0E0E0E] mb-2">
-                Full Name
-              </label>
               <input
-                id="name"
-                name="name"
                 type="text"
-                required
+                name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-[#0E0E0E] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0E0E0E] focus:ring-0 transition-colors text-sm"
-                placeholder="John Doe"
+                required
+                placeholder="Full Name"
+                className="w-full px-6 py-3.5 border border-gray-300 rounded-full focus:outline-none focus:border-gray-900 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
 
+            {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#0E0E0E] mb-2">
-                Email
-              </label>
               <input
-                id="email"
-                name="email"
                 type="email"
-                autoComplete="email"
-                required
+                name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-[#0E0E0E] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0E0E0E] focus:ring-0 transition-colors text-sm"
-                placeholder="you@example.com"
+                required
+                placeholder="Email Address"
+                className="w-full px-6 py-3.5 border border-gray-300 rounded-full focus:outline-none focus:border-gray-900 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
 
+            {/* Phone Input */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-[#0E0E0E] mb-2">
-                Phone <span className="text-[#6B6B6B] font-normal">(Optional)</span>
-              </label>
               <input
-                id="phone"
-                name="phone"
                 type="tel"
+                name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-[#0E0E0E] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0E0E0E] focus:ring-0 transition-colors text-sm"
-                placeholder="+91 98765 43210"
+                placeholder="Phone Number (Optional)"
+                className="w-full px-6 py-3.5 border border-gray-300 rounded-full focus:outline-none focus:border-gray-900 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
 
+            {/* Role Select */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-[#0E0E0E] mb-2">
-                Account Type
-              </label>
               <select
-                id="role"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-[#0E0E0E] bg-white focus:outline-none focus:border-[#0E0E0E] focus:ring-0 transition-colors text-sm"
+                className="w-full px-6 py-3.5 border border-gray-300 rounded-full focus:outline-none focus:border-gray-900 transition-all duration-200 text-gray-900 bg-white"
               >
                 <option value="user">Buyer/User</option>
                 <option value="agent">Real Estate Agent</option>
               </select>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[#0E0E0E] mb-2">
-                Password
-              </label>
+            {/* Password Input */}
+            <div className="relative">
               <input
-                id="password"
+                type={showPassword ? 'text' : 'password'}
                 name="password"
-                type="password"
-                autoComplete="new-password"
-                required
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-[#0E0E0E] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0E0E0E] focus:ring-0 transition-colors text-sm"
-                placeholder="At least 6 characters"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#0E0E0E] mb-2">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
                 required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-[#0E0E0E] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#0E0E0E] focus:ring-0 transition-colors text-sm"
-                placeholder="Confirm your password"
+                placeholder="Password (min. 6 characters)"
+                className="w-full px-6 py-3.5 pr-12 border border-gray-300 rounded-full focus:outline-none focus:border-gray-900 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
               />
-            </div>
-
-            <div className="pt-2">
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#0E0E0E] text-white px-4 py-2.5 rounded-lg hover:bg-[#1A1A1A] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {loading ? 'Creating account...' : 'Create account'}
+                {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
               </button>
             </div>
+
+            {/* Confirm Password Input */}
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                placeholder="Confirm Password"
+                className="w-full px-6 py-3.5 pr-12 border border-gray-300 rounded-full focus:outline-none focus:border-gray-900 transition-all duration-200 text-gray-900 placeholder:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+              </button>
+            </div>
+
+            {/* Sign Up Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black text-white py-3.5 px-6 rounded-full hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+
+
+            <div className="text-center mt-6">
+              <p className="text-sm text-gray-600">
+                Already have an account?{' '}
+                <Link to="/login" className="font-semibold text-gray-900 hover:text-gray-700 transition-colors underline underline-offset-2">
+                  Sign in
+                </Link>
+              </p>
+            </div>
           </form>
+        </div>
+      </div>
+
+      {/* Right Side - Illustration */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-50 to-green-100 items-center justify-center p-12">
+        <div className="max-w-lg text-center animate-fade-in">
+          <img
+            src="/signup-illustration.png"
+            alt="Get started illustration"
+            className="w-full max-w-md mx-auto mb-8 drop-shadow-2xl"
+          />
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Get Started
+            </h2>
+            <p className="text-xl text-green-600 font-semibold">
+              Join for Free
+            </p>
+            <p className="text-gray-700 mt-4">
+              Discover your dream property with <span className="font-bold">UrbanNest</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

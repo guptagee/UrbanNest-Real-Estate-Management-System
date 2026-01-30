@@ -52,81 +52,141 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7]">
+    <div className="min-h-screen bg-grey-100">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-white via-[#F7F7F7] to-white pt-32 pb-24 overflow-hidden">
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#0E0E0E]/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-[#0E0E0E]/5 to-transparent rounded-full blur-3xl" />
+      <section className="relative bg-gradient-to-br from-white via-grey-50 to-white pt-32 pb-28 overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="https://cdn.dribbble.com/userupload/16006995/file/original-d940fb9b7d53542e0d887c1e08b60571.mp4" type="video/mp4" />
+          </video>
+          {/* Dark Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/40"></div>
+        </div>
 
-        <div className="max-w-7xl mx-auto px-8 lg:px-24 relative z-10">
+        {/* Animated Decorative Elements */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-white/10 to-transparent rounded-full blur-3xl animate-float z-10" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-3xl z-10" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl z-10" style={{ animationDelay: '2s' }} />
+
+        <div className="max-w-7xl mx-auto px-8 lg:px-24 relative z-20">
           <div className="max-w-4xl animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold text-[#0E0E0E] leading-tight mb-6 tracking-tight">
-              Find your perfect space.
+            {/* Main Heading */}
+            <h1 className="text-6xl md:text-7xl font-bold text-white leading-[1.1] mb-6 tracking-tight drop-shadow-2xl">
+              Find your perfect{' '}
+              <span className="relative inline-block">
+                <span className="relative z-10">space</span>
+                <span className="absolute bottom-2 left-0 w-full h-3 bg-purple-500/50 -rotate-1 -z-10"></span>
+              </span>
+              .
             </h1>
-            <p className="text-xl text-[#6B6B6B] mb-8 leading-relaxed max-w-2xl">
+
+            <p className="text-xl md:text-2xl text-white/90 mb-10 leading-relaxed max-w-3xl drop-shadow-lg">
               Urbannest is your trusted partner for finding premium properties.
-              Discover apartments, villas, and new developments in Rajkot and across India.
+              Discover apartments, villas, and new developments across India.
             </p>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="mb-8 max-w-xl relative z-10 animate-slide-in-left">
-              <div className="relative flex items-center group">
-                <FiSearch className="absolute left-4 text-gray-400 w-5 h-5 group-focus-within:text-[#0E0E0E] transition-colors" />
+            <form onSubmit={handleSearch} className="mb-10 max-w-2xl relative z-10 animate-slide-in-up">
+              <div className="relative flex items-center group bg-white rounded-2xl shadow-strong hover:shadow-intense transition-all duration-300 border border-grey-200 hover:border-grey-400">
+                <FiSearch className="absolute left-5 text-grey-400 w-6 h-6 group-focus-within:text-black transition-colors" />
                 <input
                   type="text"
-                  placeholder="Search by city, locality, or project..."
-                  className="w-full pl-12 pr-32 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0E0E0E] focus:border-transparent shadow-lg hover:shadow-xl text-gray-900 bg-white transition-all"
+                  placeholder="Search by city, locality..."
+                  className="w-full pl-14 pr-36 py-5 rounded-2xl focus:outline-none text-grey-900 bg-transparent text-lg"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 bg-[#0E0E0E] text-white px-6 py-2.5 rounded-lg hover:bg-[#1A1A1A] hover:shadow-lg transition-all text-sm font-medium"
+                  className="absolute right-2 bg-black text-white px-8 py-3 rounded-xl hover:bg-grey-900 hover:shadow-lg transition-all font-semibold flex items-center gap-2 group/btn"
                 >
                   Search
+                  <FiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             </form>
 
-            <div className="flex items-center gap-4 animate-slide-in-right">
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 mb-8 animate-slide-in-up" style={{ animationDelay: '0.1s' }}>
               <Link
                 to="/properties"
-                className="bg-[#0E0E0E] text-white px-6 py-3 rounded-lg hover:bg-[#1A1A1A] hover:shadow-lg transition-all text-sm font-medium inline-flex items-center gap-2 shadow-md"
+                className="bg-white text-black px-8 py-4 rounded-xl hover:bg-grey-100 hover:shadow-strong transition-all font-semibold inline-flex items-center gap-2 group shadow-md"
               >
                 Explore Properties
-                <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/projects"
-                className="text-[#0E0E0E] px-6 py-3 rounded-lg hover:bg-[#F7F7F7] hover:shadow-md transition-all text-sm font-medium border border-[#E6E6E6]"
+                className="text-white px-8 py-4 rounded-xl hover:bg-white/10 hover:shadow-md transition-all font-semibold border-2 border-white/50 hover:border-white backdrop-blur-sm"
               >
                 New Projects
               </Link>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap items-center gap-6 text-sm text-white/90 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                  <FiCheck className="w-3 h-3 text-white" />
+                </div>
+                <span className="font-medium drop-shadow">500+ Verified Properties</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                  <FiCheck className="w-3 h-3 text-white" />
+                </div>
+                <span className="font-medium drop-shadow">2,000+ Happy Customers</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                  <FiCheck className="w-3 h-3 text-white" />
+                </div>
+                <span className="font-medium drop-shadow">15+ Cities Covered</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
+
       {/* Stats Section */}
-      <section className="py-16 bg-white border-y border-[#E6E6E6]">
+      <section className="py-20 bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-            <div className="group hover-lift cursor-default">
-              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">500+</div>
-              <div className="text-sm text-[#6B6B6B] font-medium">Properties Listed</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+            <div className="group text-center cursor-default">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-grey-100 rounded-2xl mb-4 group-hover:bg-black group-hover:scale-110 transition-all duration-300">
+                <FiHome className="w-8 h-8 text-black group-hover:text-white transition-colors" />
+              </div>
+              <div className="text-5xl font-bold text-black mb-2 font-display group-hover:scale-110 transition-transform">500+</div>
+              <div className="text-sm text-grey-600 font-semibold uppercase tracking-wider">Properties Listed</div>
             </div>
-            <div className="group hover-lift cursor-default">
-              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">2,000+</div>
-              <div className="text-sm text-[#6B6B6B] font-medium">Happy Customers</div>
+            <div className="group text-center cursor-default">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-grey-100 rounded-2xl mb-4 group-hover:bg-black group-hover:scale-110 transition-all duration-300">
+                <FiUsers className="w-8 h-8 text-black group-hover:text-white transition-colors" />
+              </div>
+              <div className="text-5xl font-bold text-black mb-2 font-display group-hover:scale-110 transition-transform">2,000+</div>
+              <div className="text-sm text-grey-600 font-semibold uppercase tracking-wider">Happy Customers</div>
             </div>
-            <div className="group hover-lift cursor-default">
-              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">15+</div>
-              <div className="text-sm text-[#6B6B6B] font-medium">Cities Covered</div>
+            <div className="group text-center cursor-default">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-grey-100 rounded-2xl mb-4 group-hover:bg-black group-hover:scale-110 transition-all duration-300">
+                <FiSearch className="w-8 h-8 text-black group-hover:text-white transition-colors" />
+              </div>
+              <div className="text-5xl font-bold text-black mb-2 font-display group-hover:scale-110 transition-transform">15+</div>
+              <div className="text-sm text-grey-600 font-semibold uppercase tracking-wider">Cities Covered</div>
             </div>
-            <div className="group hover-lift cursor-default">
-              <div className="text-4xl font-bold text-[#0E0E0E] mb-2 group-hover:scale-110 transition-transform">₹500Cr+</div>
-              <div className="text-sm text-[#6B6B6B] font-medium">Property Value Sold</div>
+            <div className="group text-center cursor-default">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-grey-100 rounded-2xl mb-4 group-hover:bg-black group-hover:scale-110 transition-all duration-300">
+                <FiTrendingUp className="w-8 h-8 text-black group-hover:text-white transition-colors" />
+              </div>
+              <div className="text-5xl font-bold text-black mb-2 font-display group-hover:scale-110 transition-transform">₹500Cr+</div>
+              <div className="text-sm text-grey-600 font-semibold uppercase tracking-wider">Property Value Sold</div>
             </div>
           </div>
         </div>
@@ -138,9 +198,9 @@ const Home = () => {
       {/* Platform Features - Bento Grid */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
-          <div className="mb-16">
-            <h2 className="text-3xl font-medium text-[#0E0E0E] mb-4">Why Choose Urbannest?</h2>
-            <p className="text-[#6B6B6B] text-lg max-w-2xl">
+          <div className="mb-16 max-w-3xl">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 font-display">Why Choose Urbannest?</h2>
+            <p className="text-grey-600 text-xl leading-relaxed">
               We simplify the real estate journey. Whether you are buying, selling, or renting,
               we provide the tools and transparency you need to make the right decision.
             </p>
@@ -148,70 +208,76 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature Card 1 */}
-            <div className="bg-[#F7F7F7] rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-colors">
-              <div className="w-12 h-12 bg-[#0E0E0E] rounded-lg flex items-center justify-center mb-6">
-                <FiHome className="w-6 h-6 text-white" />
+            <div className="group bg-grey-50 rounded-3xl p-8 border border-grey-200 hover:border-black hover:shadow-strong transition-all duration-300 hover:-translate-y-1 animate-fade-in">
+              <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <FiHome className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Verified Listings</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
+              <h3 className="text-2xl font-bold text-black mb-4 font-display">Verified Listings</h3>
+              <p className="text-grey-600 leading-relaxed">
                 Browse through hundreds of verified properties. We ensure every listing is authentic and up-to-date.
               </p>
             </div>
 
             {/* Feature Card 2 */}
-            <div className="bg-[#F7F7F7] rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-colors">
-              <div className="w-12 h-12 bg-[#0E0E0E] rounded-lg flex items-center justify-center mb-6">
-                <FiSearch className="w-6 h-6 text-white" />
+            <div className="group bg-grey-50 rounded-3xl p-8 border border-grey-200 hover:border-black hover:shadow-strong transition-all duration-300 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <FiSearch className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Smart Search</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
+              <h3 className="text-2xl font-bold text-black mb-4 font-display">Smart Search</h3>
+              <p className="text-grey-600 leading-relaxed">
                 Find your perfect home with advanced filters. Search by location, budget, amenities, and more.
               </p>
             </div>
 
             {/* Feature Card 3 */}
-            <div className="bg-[#F7F7F7] rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-colors">
-              <div className="w-12 h-12 bg-[#0E0E0E] rounded-lg flex items-center justify-center mb-6">
-                <FiUsers className="w-6 h-6 text-white" />
+            <div className="group bg-grey-50 rounded-3xl p-8 border border-grey-200 hover:border-black hover:shadow-strong transition-all duration-300 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <FiUsers className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Expert Support</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
+              <h3 className="text-2xl font-bold text-black mb-4 font-display">Expert Support</h3>
+              <p className="text-grey-600 leading-relaxed">
                 Connect with top-rated agents and get expert advice throughout your property journey.
               </p>
             </div>
 
             {/* Feature Card 4 - Larger */}
-            <div className="bg-[#F7F7F7] rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-colors md:col-span-2">
-              <div className="w-12 h-12 bg-[#0E0E0E] rounded-lg flex items-center justify-center mb-6">
-                <FiTrendingUp className="w-6 h-6 text-white" />
+            <div className="group bg-grey-50 rounded-3xl p-8 border border-grey-200 hover:border-black hover:shadow-strong transition-all duration-300 hover:-translate-y-1 md:col-span-2 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <FiTrendingUp className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Seamless Bookings</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed mb-4">
+              <h3 className="text-2xl font-bold text-black mb-4 font-display">Seamless Bookings</h3>
+              <p className="text-grey-600 leading-relaxed mb-6">
                 Schedule property visits instantly. Pick a date and time that works for you, and we handle the rest.
               </p>
-              <div className="flex items-center gap-4 text-sm text-[#0E0E0E]">
-                <div className="flex items-center gap-2">
-                  <FiCheck className="w-4 h-4" />
+              <div className="flex flex-wrap items-center gap-6">
+                <div className="flex items-center gap-2 text-black font-semibold">
+                  <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center">
+                    <FiCheck className="w-4 h-4 text-white" />
+                  </div>
                   <span>Instant Confirmation</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FiCheck className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-black font-semibold">
+                  <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center">
+                    <FiCheck className="w-4 h-4 text-white" />
+                  </div>
                   <span>Virtual Tours</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FiCheck className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-black font-semibold">
+                  <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center">
+                    <FiCheck className="w-4 h-4 text-white" />
+                  </div>
                   <span>Visit Reminders</span>
                 </div>
               </div>
             </div>
 
             {/* Feature Card 5 */}
-            <div className="bg-[#F7F7F7] rounded-2xl p-8 border border-[#E6E6E6] hover:border-[#0E0E0E] transition-colors">
-              <div className="w-12 h-12 bg-[#0E0E0E] rounded-lg flex items-center justify-center mb-6">
-                <FiZap className="w-6 h-6 text-white" />
+            <div className="group bg-grey-50 rounded-3xl p-8 border border-grey-200 hover:border-black hover:shadow-strong transition-all duration-300 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <FiZap className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">New Projects</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
+              <h3 className="text-2xl font-bold text-black mb-4 font-display">New Projects</h3>
+              <p className="text-grey-600 leading-relaxed">
                 Be the first to know about upcoming residential and commercial projects in your area.
               </p>
             </div>
@@ -224,15 +290,15 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-medium text-[#0E0E0E] mb-4">New Projects</h2>
-              <p className="text-[#6B6B6B] text-sm">Discover premium developments and new launches</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-black mb-4 font-display">New Projects</h2>
+              <p className="text-grey-600 text-lg">Discover premium developments and new launches</p>
             </div>
             <Link
               to="/projects"
-              className="text-[#0E0E0E] text-sm font-medium hover:underline flex items-center gap-2"
+              className="text-black font-semibold hover:gap-3 flex items-center gap-2 group transition-all"
             >
               View All Projects
-              <FiArrowRight className="w-4 h-4" />
+              <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
           {featuredProjects.length > 0 ? (
@@ -250,19 +316,19 @@ const Home = () => {
       </section>
 
       {/* Featured Properties */}
-      <section className="py-24 bg-[#F7F7F7]">
+      <section className="py-24 bg-grey-50">
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-medium text-[#0E0E0E] mb-4">Featured Properties</h2>
-              <p className="text-[#6B6B6B] text-sm">Carefully curated selections just for you</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-black mb-4 font-display">Featured Properties</h2>
+              <p className="text-grey-600 text-lg">Carefully curated selections just for you</p>
             </div>
             <Link
               to="/properties"
-              className="text-[#0E0E0E] text-sm font-medium hover:underline flex items-center gap-2"
+              className="text-black font-semibold hover:gap-3 flex items-center gap-2 group transition-all"
             >
               View All
-              <FiArrowRight className="w-4 h-4" />
+              <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
           {featuredProperties.length > 0 ? (
@@ -280,36 +346,53 @@ const Home = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 bg-white border-y border-[#E6E6E6]">
+      <section className="py-24 bg-white border-y border-grey-200">
         <div className="max-w-7xl mx-auto px-8 lg:px-24">
           <div className="max-w-3xl mb-16">
-            <h2 className="text-3xl font-medium text-[#0E0E0E] mb-4">How it works.</h2>
-            <p className="text-[#6B6B6B] text-lg">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 font-display">How it works.</h2>
+            <p className="text-grey-600 text-xl leading-relaxed">
               We've made buying and renting properties simple and transparent. Here is how you can get started with Urbannest.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="border-l-2 border-[#0E0E0E] pl-6">
-              <div className="text-sm font-medium text-[#6B6B6B] mb-2 uppercase tracking-wider">Step 1</div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Register & Search</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
-                Create your account and browse our extensive list of properties. Use our smart filters to find exactly what you need.
-              </p>
+            <div className="relative group">
+              <div className="absolute -left-1 top-0 w-1 h-full bg-gradient-to-b from-black to-grey-400 rounded-full"></div>
+              <div className="pl-8">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-black text-white rounded-xl font-bold text-xl mb-4 group-hover:scale-110 transition-transform">
+                  1
+                </div>
+                <h3 className="text-2xl font-bold text-black mb-4 font-display">Register & Search</h3>
+                <p className="text-grey-600 leading-relaxed">
+                  Create your account and browse our extensive list of properties. Use our smart filters to find exactly what you need.
+                </p>
+              </div>
             </div>
-            <div className="border-l-2 border-[#E6E6E6] pl-6">
-              <div className="text-sm font-medium text-[#6B6B6B] mb-2 uppercase tracking-wider">Step 2</div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Book a Visit</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
-                Like what you see? Schedule a site visit directly through the platform. We will confirm the time with the agent.
-              </p>
+
+            <div className="relative group">
+              <div className="absolute -left-1 top-0 w-1 h-full bg-gradient-to-b from-grey-400 to-grey-300 rounded-full"></div>
+              <div className="pl-8">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-grey-800 text-white rounded-xl font-bold text-xl mb-4 group-hover:scale-110 group-hover:bg-black transition-all">
+                  2
+                </div>
+                <h3 className="text-2xl font-bold text-black mb-4 font-display">Book a Visit</h3>
+                <p className="text-grey-600 leading-relaxed">
+                  Like what you see? Schedule a site visit directly through the platform. We will confirm the time with the agent.
+                </p>
+              </div>
             </div>
-            <div className="border-l-2 border-[#E6E6E6] pl-6">
-              <div className="text-sm font-medium text-[#6B6B6B] mb-2 uppercase tracking-wider">Step 3</div>
-              <h3 className="text-xl font-medium text-[#0E0E0E] mb-3">Close the Deal</h3>
-              <p className="text-[#6B6B6B] text-sm leading-relaxed">
-                Connect with the owner or agent, negotiate the best price, and make the property yours with confidence.
-              </p>
+
+            <div className="relative group">
+              <div className="absolute -left-1 top-0 w-1 h-full bg-gradient-to-b from-grey-300 to-grey-200 rounded-full"></div>
+              <div className="pl-8">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-grey-600 text-white rounded-xl font-bold text-xl mb-4 group-hover:scale-110 group-hover:bg-black transition-all">
+                  3
+                </div>
+                <h3 className="text-2xl font-bold text-black mb-4 font-display">Close the Deal</h3>
+                <p className="text-grey-600 leading-relaxed">
+                  Connect with the owner or agent, negotiate the best price, and make the property yours with confidence.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -509,24 +592,31 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-[#0E0E0E]">
-        <div className="max-w-7xl mx-auto px-8 lg:px-24 text-center">
-          <h2 className="text-4xl font-medium text-white mb-6">
+      <section className="relative py-32 bg-gradient-to-t from-purple-100 via-violet-600 to-slate-800 overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" style={{ animationDelay: '1.5s' }}></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-8 lg:px-24 text-center relative z-10">
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 font-display">
             Start Your Journey Today
           </h2>
-          <p className="text-[#E6E6E6] text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-grey-300 text-xl mb-12 max-w-3xl mx-auto leading-relaxed">
             Join the fastest growing real estate community in India. Find your dream home or list your property in minutes.
           </p>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/register"
-              className="bg-white text-[#0E0E0E] px-6 py-3 rounded-lg hover:bg-[#F7F7F7] transition-colors text-sm font-medium inline-flex items-center gap-2"
+              className="bg-white text-black px-10 py-5 rounded-xl hover:bg-grey-100 hover:shadow-strong transition-all font-bold text-lg inline-flex items-center gap-2 group shadow-lg"
             >
               Sign Up Now
+              <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               to="/properties"
-              className="text-white px-6 py-3 rounded-lg hover:bg-[#1A1A1A] transition-colors text-sm font-medium border border-[#6B6B6B]"
+              className="text-white px-10 py-5 rounded-xl hover:bg-white/10 transition-all font-bold text-lg border-2 border-white/30 hover:border-white/50"
             >
               Browse Properties
             </Link>

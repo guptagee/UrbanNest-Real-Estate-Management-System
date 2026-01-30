@@ -7,7 +7,7 @@ import StatsCard from '../components/dashboard/StatsCard'
 import toast from 'react-hot-toast'
 import {
   FiUsers, FiCalendar, FiHome,
-  FiTrendingUp, FiSearch, FiTrash2, FiEye, FiAlertCircle, FiSettings, FiMessageCircle,FiLayers, FiBox
+  FiTrendingUp, FiSearch, FiTrash2, FiEye, FiAlertCircle, FiSettings, FiMessageCircle, FiLayers, FiBox
 } from 'react-icons/fi'
 import BuilderManagement from '../components/admin/BuilderManagement'
 import ProjectManagement from '../components/admin/ProjectManagement'
@@ -50,6 +50,13 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchStats()
+    if (activeTab === 'overview') {
+      // Fetch all data for Recent Activity section
+      fetchUsers()
+      fetchProperties()
+      fetchBookings()
+      fetchReports()
+    }
     if (activeTab === 'users') fetchUsers()
     if (activeTab === 'properties') fetchProperties()
     if (activeTab === 'bookings') fetchBookings()
@@ -111,8 +118,8 @@ const AdminDashboard = () => {
       toast.success('User role updated')
       fetchUsers()
       fetchStats()
-    } catch (error) { 
-      toast.error(error.response?.data?.message || 'Failed to update role') 
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update role')
     }
   }
 
@@ -122,8 +129,8 @@ const AdminDashboard = () => {
       toast.success(`User ${field === 'isActive' ? 'activation' : 'block'} status updated`)
       fetchUsers()
       fetchStats()
-    } catch (error) { 
-      toast.error(error.response?.data?.message || `Failed to update ${field}`) 
+    } catch (error) {
+      toast.error(error.response?.data?.message || `Failed to update ${field}`)
     }
   }
 
@@ -195,16 +202,15 @@ const AdminDashboard = () => {
 
   return (
     <DashboardLayout user={user}>
-      <div className="space-y-8">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">System Administration</h1>
-            <p className="text-gray-500 mt-1">Complete control over the Urbannest Real Estate Management System.</p>
-          </div>
+      <div className="space-y-6">
+        {/* Welcome Banner */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome to UrbanNest Admin Panel</h1>
+          <p className="text-gray-600 text-sm">Complete control over the UrbanNest Real Estate Management System.</p>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="bg-white p-1 rounded-xl border border-gray-100 shadow-sm inline-flex gap-1 overflow-x-auto max-w-full">
+        <div className="bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm inline-flex gap-1 overflow-x-auto max-w-full">
           {[
             { id: 'overview', label: 'Overview', icon: FiTrendingUp },
             { id: 'users', label: 'User Directory', icon: FiUsers },
@@ -222,7 +228,7 @@ const AdminDashboard = () => {
                 setActiveTab(tab.id)
                 navigate(`/admin?tab=${tab.id}`, { replace: true })
               }}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 ${activeTab === tab.id ? 'bg-black text-white shadow-lg shadow-black/10' : 'text-gray-500 hover:bg-gray-50'
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === tab.id ? 'bg-purple-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                 }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -233,10 +239,10 @@ const AdminDashboard = () => {
 
         {/* Content Tabs */}
         {activeTab === 'overview' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {/* Pending Alerts */}
             {(stats.pendingProperties > 0 || stats.pendingBookings > 0 || (stats.reportsByStatus?.pending || 0) > 0) && (
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
                 <h3 className="text-lg font-bold text-amber-900 mb-4">Pending Actions Required</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {stats.pendingProperties > 0 && (
@@ -276,94 +282,236 @@ const AdminDashboard = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-semibold text-blue-600 uppercase tracking-wight">Platform Users</span>
-                  <div className="p-2 bg-blue-500 rounded-xl text-white group-hover:scale-110 transition-transform">
-                    <FiUsers className="w-5 h-5" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <div className="bg-white border border-gray-200 p-5 rounded-xl hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Platform Users</span>
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <FiUsers className="w-4 h-4 text-blue-600" />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <div className="text-4xl font-bold text-blue-900">{stats.totalUsers}</div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-bold text-gray-900">{stats.totalUsers}</div>
                   <div className="flex gap-3 text-xs">
                     <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="text-blue-700 font-medium">Agents: {stats.usersByRole?.agent || 0}</span>
+                      {/* <div className="w-2 h-2 bg-blue-500 rounded-full"></div> */}
+                      {/* <span className="text-gray-600">Agents: {stats.usersByRole?.agent || 0}</span> */}
                     </div>
                     <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                      <span className="text-blue-600 font-medium">Users: {stats.usersByRole?.user || 0}</span>
+                      {/* <div className="w-2 h-2 bg-blue-300 rounded-full"></div> */}
+                      {/* <span className="text-gray-600">Users: {stats.usersByRole?.user || 0}</span> */}
                     </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-2xl border border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wight">Total Listings</span>
-                  <div className="p-2 bg-emerald-500 rounded-xl text-white group-hover:scale-110 transition-transform">
-                    <FiHome className="w-5 h-5" />
+
+              <div className="bg-white border border-gray-200 p-5 rounded-xl hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Total Listings</span>
+                  <div className="p-2 bg-emerald-50 rounded-lg">
+                    <FiHome className="w-4 h-4 text-emerald-600" />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <div className="text-4xl font-bold text-emerald-900">{stats.totalProperties}</div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-bold text-gray-900">{stats.totalProperties}</div>
                   <div className="flex gap-3 text-xs">
                     <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                      <span className="text-emerald-700 font-medium">{stats.propertiesByStatus?.available || 0} Available</span>
+                      <span className="text-gray-600">{stats.propertiesByStatus?.available || 0} Available</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-emerald-300 rounded-full"></div>
-                      <span className="text-emerald-600 font-medium">{stats.propertiesByStatus?.sold || 0} Sold</span>
+                      <span className="text-gray-600">{stats.propertiesByStatus?.sold || 0} Sold</span>
                     </div>
                     {stats.propertiesByStatus?.pending > 0 && (
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
-                        <span className="text-amber-700 font-medium">{stats.propertiesByStatus.pending} Pending</span>
+                        <span className="text-gray-600">{stats.propertiesByStatus.pending} Pending</span>
                       </div>
                     )}
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-6 rounded-2xl border border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-semibold text-amber-600 uppercase tracking-wight">System Activity</span>
-                  <div className="p-2 bg-amber-500 rounded-xl text-white group-hover:scale-110 transition-transform">
-                    <FiCalendar className="w-5 h-5" />
+
+              <div className="bg-white border border-gray-200 p-5 rounded-xl hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">System Activity</span>
+                  <div className="p-2 bg-amber-50 rounded-lg">
+                    <FiCalendar className="w-4 h-4 text-amber-600" />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <div className="text-4xl font-bold text-amber-900">{stats.totalBookings}</div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-bold text-gray-900">{stats.totalBookings}</div>
                   <div className="flex gap-3 text-xs">
                     <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                      <span className="text-amber-700 font-medium">Confirmed: {stats.bookingsByStatus?.confirmed || 0}</span>
+                      <span className="text-gray-600">Confirmed: {stats.bookingsByStatus?.confirmed || 0}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-amber-300 rounded-full"></div>
-                      <span className="text-amber-600 font-medium">Pending: {stats.bookingsByStatus?.pending || 0}</span>
+                      <span className="text-gray-600">Pending: {stats.bookingsByStatus?.pending || 0}</span>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-semibold text-purple-600 uppercase tracking-wight">Revenue</span>
-                  <div className="p-2 bg-purple-500 rounded-xl text-white group-hover:scale-110 transition-transform">
-                    <FiTrendingUp className="w-5 h-5" />
+
+              <div className="bg-white border border-gray-200 p-5 rounded-xl hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Revenue</span>
+                  <div className="p-2 bg-purple-50 rounded-lg">
+                    <FiTrendingUp className="w-4 h-4 text-purple-600" />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <div className="text-4xl font-bold text-purple-900">{formatPrice(stats.revenue || 0)}</div>
+                <div className="space-y-2">
+                  <div className="text-3xl font-bold text-gray-900">{formatPrice(stats.revenue || 0)}</div>
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-xs text-green-600 font-medium">+12% from last month</span>
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span className="text-xs text-gray-600">+12% from last month</span>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Recent Activity Section */}
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Recent Activity</h3>
+                <span className="text-xs text-gray-500 font-semibold">Last 24 hours</span>
+              </div>
+
+              <div className="space-y-4">
+                {/* Recent Users */}
+                {users.slice(0, 3).map((user, index) => (
+                  <div key={`user-${user._id}`} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <FiUsers className="w-4 h-4 text-blue-600" />
+                        <span className="font-semibold text-gray-900">New User Registered</span>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">
+                        {user.name} ({user.email}) joined as {user.role}
+                      </p>
+                      <span className="text-xs text-gray-400 mt-1 block">
+                        {user.createdAt ? format(new Date(user.createdAt), 'MMM dd, yyyy • hh:mm a') : 'Recently'}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {user.role}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Recent Properties */}
+                {properties.slice(0, 2).map((property, index) => (
+                  <div key={`property-${property._id}`} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                        <FiHome className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <FiHome className="w-4 h-4 text-emerald-600" />
+                        <span className="font-semibold text-gray-900">New Property Listed</span>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">
+                        {property.title} - {property.location?.city}
+                      </p>
+                      <span className="text-xs text-gray-400 mt-1 block">
+                        {property.createdAt ? format(new Date(property.createdAt), 'MMM dd, yyyy • hh:mm a') : 'Recently'}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${property.status === 'available' ? 'bg-green-100 text-green-800' :
+                        property.status === 'pending' ? 'bg-amber-100 text-amber-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                        {property.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Recent Bookings */}
+                {bookings.slice(0, 2).map((booking, index) => (
+                  <div key={`booking-${booking._id}`} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                        <FiCalendar className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <FiCalendar className="w-4 h-4 text-amber-600" />
+                        <span className="font-semibold text-gray-900">New Booking Request</span>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">
+                        {booking.user?.name} booked {booking.property?.title}
+                      </p>
+                      <span className="text-xs text-gray-400 mt-1 block">
+                        {booking.createdAt ? format(new Date(booking.createdAt), 'MMM dd, yyyy • hh:mm a') : 'Recently'}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                        booking.status === 'pending' ? 'bg-amber-100 text-amber-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                        {booking.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Recent Reports */}
+                {reports.slice(0, 2).map((report, index) => (
+                  <div key={`report-${report._id}`} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                        <FiAlertCircle className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <FiAlertCircle className="w-4 h-4 text-red-600" />
+                        <span className="font-semibold text-gray-900">New Report Filed</span>
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">
+                        {report.reportType}: {report.description?.substring(0, 50)}...
+                      </p>
+                      <span className="text-xs text-gray-400 mt-1 block">
+                        {report.createdAt ? format(new Date(report.createdAt), 'MMM dd, yyyy • hh:mm a') : 'Recently'}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${report.status === 'resolved' ? 'bg-green-100 text-green-800' :
+                        report.status === 'pending' ? 'bg-amber-100 text-amber-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                        {report.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Empty State */}
+                {users.length === 0 && properties.length === 0 && bookings.length === 0 && reports.length === 0 && (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FiTrendingUp className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <p className="text-gray-500 font-medium">No recent activity</p>
+                    <p className="text-sm text-gray-400 mt-1">Activity will appear here as it happens</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -34,7 +34,7 @@ const PropertyDetail = () => {
       const response = await api.get(`/properties/${id}`)
       const propertyData = response.data.data
       setProperty(propertyData)
-      
+
       // Fetch similar properties
       try {
         const similarRes = await api.get(`/properties?propertyType=${propertyData.propertyType}&city=${propertyData.location?.city}&status=available&limit=4`)
@@ -43,7 +43,7 @@ const PropertyDetail = () => {
       } catch (error) {
         // Silently fail - not critical
       }
-      
+
       // Add to search history if authenticated
       if (isAuthenticated) {
         try {
@@ -113,7 +113,7 @@ const PropertyDetail = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
       </div>
     )
   }
@@ -128,7 +128,7 @@ const PropertyDetail = () => {
         {/* Back Button */}
         <Link
           to="/properties"
-          className="text-primary-600 hover:text-primary-700 mb-4 inline-block"
+          className="text-purple-600 hover:text-purple-700 mb-4 inline-block font-semibold"
         >
           ← Back to Properties
         </Link>
@@ -165,15 +165,14 @@ const PropertyDetail = () => {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-primary-600 mb-2">
+                <div className="text-3xl font-bold text-purple-600 mb-2">
                   {formatPrice(property.price)}
                 </div>
-                <span className={`px-3 py-1 rounded text-sm ${
-                  property.status === 'available' ? 'bg-green-100 text-green-800' :
+                <span className={`px-3 py-1 rounded text-sm ${property.status === 'available' ? 'bg-green-100 text-green-800' :
                   property.status === 'sold' ? 'bg-red-100 text-red-800' :
-                  property.status === 'rented' ? 'bg-blue-100 text-blue-800' :
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
+                    property.status === 'rented' ? 'bg-blue-100 text-blue-800' :
+                      'bg-yellow-100 text-yellow-800'
+                  }`}>
                   {property.status}
                 </span>
               </div>
@@ -182,17 +181,17 @@ const PropertyDetail = () => {
             {/* Property Details */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
               <div className="text-center">
-                <FaBed className="h-6 w-6 text-primary-600 mx-auto mb-2" />
+                <FaBed className="h-6 w-6 text-purple-600 mx-auto mb-2" />
                 <div className="text-sm text-gray-600">Bedrooms</div>
                 <div className="text-lg font-semibold">{property.bedrooms}</div>
               </div>
               <div className="text-center">
-                <FaBath className="h-6 w-6 text-primary-600 mx-auto mb-2" />
+                <FaBath className="h-6 w-6 text-purple-600 mx-auto mb-2" />
                 <div className="text-sm text-gray-600">Bathrooms</div>
                 <div className="text-lg font-semibold">{property.bathrooms}</div>
               </div>
               <div className="text-center">
-                <FiMaximize2 className="h-6 w-6 text-primary-600 mx-auto mb-2" />
+                <FiMaximize2 className="h-6 w-6 text-purple-600 mx-auto mb-2" />
                 <div className="text-sm text-gray-600">Area</div>
                 <div className="text-lg font-semibold">
                   {property.area} {property.areaUnit || 'sqm'}
@@ -218,7 +217,7 @@ const PropertyDetail = () => {
                   {property.amenities.map((amenity, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm"
+                      className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm"
                     >
                       {amenity}
                     </span>
@@ -232,7 +231,7 @@ const PropertyDetail = () => {
               <h2 className="text-xl font-semibold mb-3">Contact Information</h2>
               {property.owner && (
                 <div className="flex items-center mb-2">
-                  <FiUser className="mr-2 text-primary-600" />
+                  <FiUser className="mr-2 text-purple-600" />
                   <div>
                     <div className="font-medium">{property.owner.name}</div>
                     <div className="text-sm text-gray-600">{property.owner.email}</div>
@@ -260,10 +259,10 @@ const PropertyDetail = () => {
             {property.status === 'available' && (
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  {isBuyer && (
+                  {isAuthenticated && (
                     <button
                       onClick={() => setShowBookingModal(true)}
-                      className="flex-1 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 flex items-center justify-center"
+                      className="flex-1 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center font-semibold shadow-md"
                     >
                       <FiCalendar className="mr-2" />
                       Book a Viewing
@@ -274,11 +273,10 @@ const PropertyDetail = () => {
                       {isBuyer && (
                         <button
                           onClick={handleToggleFavorite}
-                          className={`px-6 py-3 rounded-lg flex items-center justify-center border-2 ${
-                            isFavorite
-                              ? 'bg-red-50 border-red-500 text-red-600 hover:bg-red-100'
-                              : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                          }`}
+                          className={`px-6 py-3 rounded-lg flex items-center justify-center border-2 ${isFavorite
+                            ? 'bg-red-50 border-red-500 text-red-600 hover:bg-red-100'
+                            : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
                         >
                           <FiHeart className={`mr-2 ${isFavorite ? 'fill-current' : ''}`} />
                           {isFavorite ? 'Saved' : 'Save'}
@@ -309,6 +307,18 @@ const PropertyDetail = () => {
             )}
           </div>
         </div>
+
+        {/* Similar Properties */}
+        {similarProperties.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Properties</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {similarProperties.map((similarProperty) => (
+                <PropertyCard key={similarProperty._id} property={similarProperty} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Report Modal */}
@@ -336,7 +346,7 @@ const PropertyDetail = () => {
                   onChange={(e) => setBookingData({ ...bookingData, bookingDate: e.target.value })}
                   min={new Date().toISOString().split('T')[0]}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div className="mb-4">
@@ -348,7 +358,7 @@ const PropertyDetail = () => {
                   value={bookingData.bookingTime}
                   onChange={(e) => setBookingData({ ...bookingData, bookingTime: e.target.value })}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div className="mb-4">
@@ -359,7 +369,7 @@ const PropertyDetail = () => {
                   value={bookingData.message}
                   onChange={(e) => setBookingData({ ...bookingData, message: e.target.value })}
                   rows="3"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div className="flex gap-4">
@@ -372,7 +382,7 @@ const PropertyDetail = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold"
                 >
                   Submit Booking
                 </button>
@@ -381,21 +391,8 @@ const PropertyDetail = () => {
           </div>
         </div>
       )}
-
-      {/* Similar Properties */}
-      {similarProperties.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Properties</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {similarProperties.map((similarProperty) => (
-              <PropertyCard key={similarProperty._id} property={similarProperty} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
 export default PropertyDetail
-
